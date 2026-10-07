@@ -24,6 +24,10 @@ from app import main
 PASSWORD = "safe-test-password"
 
 
+def test_public_profile_cache_is_isolated_from_real_data_directory(tmp_path) -> None:
+    assert main.PROFILE_CACHE_PATH.parent == tmp_path
+
+
 def _csrf_token(response) -> str:
     match = re.search(
         r'<input[^>]+name="csrf_token"[^>]+value="([^"]+)"', response.text
