@@ -6,7 +6,7 @@
 
 ## Certificate Details and How Renewal Works
 
-My TLS certificate was issued by **Let's Encrypt**. It covers: both `owsetioko.me` and `www.owsetioko.me`. And It expires on January 7 2026 because it expires every 90 days. Certbot handles renewal automatically twice a day. I can verify this by running: 
+My TLS certificate was issued by **Let's Encrypt**. It covers: both `csetioko.me` and `www.csetioko.me`. And It expires on January 5 2027 because it expires every 90 days. Certbot handles renewal automatically twice a day. I can verify this by running: 
 
 sudo certbot renew --dry-run
 
