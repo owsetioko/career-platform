@@ -8,7 +8,7 @@
 
 **Tech Stack:** Ubuntu 24.04, systemd, Nginx (from apt), Uvicorn 0.54 (already in `~/career-platform/.venv`), Azure NSG.
 
-**Status:** Tasks 0–2 run on 2026-10-07 (results under their steps). Tasks 3–5 not run yet.
+**Status:** All tasks run on 2026-10-07 (results under each step). The site is live at `http://20.88.61.1`. Crash and reboot tests are Chris's.
 
 **Spec:** Chris's request of 2026-10-07:
 
@@ -177,7 +177,7 @@ The most likely ways this looks done but isn't:
 
 **Consumes:** `career-platform` on `127.0.0.1:8000` (Task 2).
 
-- [ ] **Step 1: Install Nginx and check the VM's own firewall**
+- [x] **Step 1: Install Nginx and check the VM's own firewall**
   - **Where:** VM
   - **Run:**
     ```bash
@@ -188,8 +188,9 @@ The most likely ways this looks done but isn't:
   - **Why:** apt installs Nginx and sets it to start at boot. `ufw` is Ubuntu's firewall inside the VM. On Azure images it's normally off.
   - **Check:** `nginx -v` prints `nginx version: nginx/1.24.x`. `ufw` prints `Status: inactive`. If it says `active`, run `sudo ufw allow 80/tcp`.
   - **Undo:** `sudo apt-get purge -y nginx nginx-common && sudo apt-get autoremove -y`
+  - **Result (10:31 UTC):** Nginx wasn't installed beforehand. apt ran non-interactively (`DEBIAN_FRONTEND=noninteractive`, `-qq`), exit 0, with its log in `/tmp/nginx-install.log` on the VM. `nginx -v` printed `nginx/1.24.0 (Ubuntu)`, and `ufw` printed `Status: inactive`, so no ufw rule was needed. Nginx was already `enabled` and `active`.
 
-- [ ] **Step 2: Replace the default site with one that forwards to the app**
+- [x] **Step 2: Replace the default site with one that forwards to the app**
   - **Where:** VM
   - **Run:**
     ```bash
@@ -225,8 +226,9 @@ The most likely ways this looks done but isn't:
     sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
     sudo systemctl reload nginx
     ```
+  - **Result:** Before: `sites-enabled/` held only `default`. After: only `career-platform`. `nginx -t` printed `syntax is ok` and `test is successful`, and the reload succeeded. The first round of checks printed `200`, then **nothing** for the name, then `0`. The page title, fetched seconds later, was `Chris Owen Setioko | Information Systems & Business Analytics Student, …`, the same as port 8000 directly. Repeated 10 times: `200`, name present, 0 × `Welcome to nginx`, 0 × `Your Name`, the same 12,958 bytes every time. The app logged the missed request as `200`. The one empty result happened about 6 seconds after the reload and could not be reproduced. Its cause wasn't found.
 
-- [ ] **Step 3: Make Nginx restart itself too, and confirm it starts at boot**
+- [x] **Step 3: Make Nginx restart itself too, and confirm it starts at boot**
   - **Where:** VM
   - **Run:**
     ```bash
@@ -247,12 +249,13 @@ The most likely ways this looks done but isn't:
     sudo ss -ltnp | grep -E ':80 |:8000 '              # nginx on 0.0.0.0:80 and [::]:80; uvicorn on 127.0.0.1:8000 only
     ```
   - **Undo:** `sudo rm -r /etc/systemd/system/nginx.service.d && sudo systemctl daemon-reload`
+  - **Result:** Before: `Restart=no`. After: `Restart=on-failure`, `RestartUSec=3s`. `nginx` and `career-platform` both `enabled` and `active`. `ss`: `nginx` on `0.0.0.0:80` and `[::]:80` (master pid 1784 as `root`, workers 1919 and 1920 as `www-data`); `uvicorn` and its workers on `127.0.0.1:8000` only.
 
 ### Task 4: Port 80 in the Azure firewall (about 2 min, Chris)
 
 **Why this section:** The NSG is Azure's firewall in front of the VM. Even with Nginx listening, visitors can't reach port 80 unless a rule allows it.
 
-- [ ] **Step 1: Set `Allow-HTTP-80` to priority 320 on the right NSG**
+- [x] **Step 1: Set `Allow-HTTP-80` to priority 320 on the right NSG**
   - **Where:** PORTAL → Network security groups → **`vm-career-platformNSG`** (not `vm-career-platform-nsg`) → Inbound security rules
   - **Run:** A rule named `Allow-HTTP-80` **already exists** here at priority 310 (TCP 80, from Any, Allow). Names must be unique within an NSG, so open it and change **Priority** to `320`, then Save. Leave everything else as is.
   - **Why:** It lets visitors in on port 80 only. There is still no rule for 8000.
@@ -263,12 +266,13 @@ The most likely ways this looks done but isn't:
     ```
     Exactly two rows: `Allow-HTTP-80  80  320  *` and `AllowSSHFromLaptop  22  1000  <your IP>/32`. Nothing for 8000.
   - **Undo:** Set the priority back to 310.
+  - **Result:** Chris made the change in the portal before Task 3. The `az` check showed exactly two rows: `AllowSSHFromLaptop 22 1000 <laptop IP>/32` and `Allow-HTTP-80 80 320 *`. Nothing for 8000.
 
 ### Task 5: Verify from the outside (about 3 min)
 
 **Why this section:** The real test is what a stranger on the internet sees. Your laptop is outside Azure, so it sees the same thing.
 
-- [ ] **Step 1: The site answers on port 80, and port 8000 doesn't**
+- [x] **Step 1: The site answers on port 80, and port 8000 doesn't**
   - **Where:** LAPTOP (a new tab, not the SSH session)
   - **Run:**
     ```bash
@@ -281,6 +285,7 @@ The most likely ways this looks done but isn't:
     Then open **http://20.88.61.1** in your browser.
   - **Check:** `200`, `200`, `Chris Owen Setioko`, `0`, then `000` after about 5 seconds (blocked, so no answer). The browser shows your styled resume with no `:8000` in the address bar.
   - **Undo:** Nothing to undo (read-only).
+  - **Result (from the laptop):** `200`, `200`, `Chris Owen Setioko`, `0`. Port 8000 printed `000` after 5.02 seconds (curl exit 28, timed out), so it's blocked. The response header shows `Server: nginx/1.24.0 (Ubuntu)`, so visitors are served by Nginx. The browser check is Chris's to do.
 
 | Requirement | Proved by |
 | --- | --- |
@@ -306,7 +311,7 @@ A snapshot taken on 2026-10-07 at about 10:30 UTC, after Task 2 and before Task 
 | `127.0.0.53%lo:53` | `systemd-resolve` | The VM's own DNS cache (looks up names like `github.com`) | No: localhost only |
 | `127.0.0.54:53` | `systemd-resolve` | A second local DNS address, same program | No: localhost only |
 
-Nothing listens on port 80 yet. Nginx arrives in Task 3, so for now `Allow-HTTP-80` lets traffic through to a port where nothing answers.
+At the time of this snapshot, nothing listened on port 80. **After Task 3** (10:31 UTC), `ss` also shows `nginx` on `0.0.0.0:80` and `[::]:80`: the master process runs as `root` (it needs root to open port 80), and the workers that handle requests run as `www-data`. Reachable from the internet through `Allow-HTTP-80`.
 
 ### IP addresses
 
