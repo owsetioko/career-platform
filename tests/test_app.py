@@ -20,13 +20,6 @@ from app.database import (
 from app.main import app, get_session
 
 
-@pytest.fixture(autouse=True)
-def isolate_profile_cache(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr(
-        "app.main.PROFILE_CACHE_PATH", tmp_path / "public-profile.json"
-    )
-
-
 def _install_unavailable_database(monkeypatch) -> None:
     class UnavailableSession:
         def scalar(self, _statement):
@@ -215,6 +208,38 @@ def test_public_profile_shows_empty_states_and_omits_missing_optional_values(
     assert "No education details available." not in response.text
     assert "mailto:" not in response.text
     assert "linkedin.com" not in response.text
+
+
+def test_public_profile_education_subtitle_omits_missing_degree_or_field(
+    tmp_path, monkeypatch
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'education-subtitles.db'}"
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Jordan Lee",
+            headline="Data Analyst",
+            summary="",
+            education=[
+                Education(institution="Degree Only University", degree="Diploma"),
+                Education(institution="Field Only College", field_of_study="Business"),
+            ],
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    education_section = response.text.split(
+        '<section class="profile-section" id="education"', 1
+    )[1].split("</section>", 1)[0]
+    subtitles = [
+        " ".join(subtitle.split("</p>", 1)[0].split())
+        for subtitle in education_section.split('<p class="entry-subtitle">')[1:]
+    ]
+    assert subtitles == ["Diploma", "Business"]
 
 
 def test_public_profile_shows_empty_states_for_unpopulated_sections(

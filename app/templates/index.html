@@ -129,7 +129,7 @@
                 <h3>{{ education.institution }}</h3>
                 {% if education.degree or education.field_of_study %}
                   <p class="entry-subtitle">
-                    {{ education.degree }}{% if education.degree and education.field_of_study %}, {% endif %}{{ education.field_of_study }}
+                    {{ education.degree or "" }}{% if education.degree and education.field_of_study %}, {% endif %}{{ education.field_of_study or "" }}
                   </p>
                 {% endif %}
                 {% if education.start_date or education.end_date %}
