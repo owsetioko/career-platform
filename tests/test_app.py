@@ -1,5 +1,9 @@
+import json
+import logging
 from datetime import date
 
+import pytest
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 
@@ -13,7 +17,44 @@ from app.database import (
     Skill,
     create_database_engine,
 )
-from app.main import app
+from app.main import app, get_session
+
+
+@pytest.fixture(autouse=True)
+def isolate_profile_cache(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        "app.main.PROFILE_CACHE_PATH", tmp_path / "public-profile.json"
+    )
+
+
+def _install_unavailable_database(monkeypatch) -> None:
+    class UnavailableSession:
+        def scalar(self, _statement):
+            raise OperationalError(
+                "SELECT profile", {}, RuntimeError("database is unavailable")
+            )
+
+    def unavailable_session():
+        yield UnavailableSession()
+
+    monkeypatch.setitem(app.dependency_overrides, get_session, unavailable_session)
+
+
+def _cached_profile(display_name: str) -> dict:
+    return {
+        "slug": "owner",
+        "display_name": display_name,
+        "headline": "Business Analytics Senior",
+        "summary": "Add a short professional summary.",
+        "email": None,
+        "website": None,
+        "linkedin_url": None,
+        "github_url": None,
+        "experiences": [],
+        "skills": [],
+        "projects": [],
+        "education": [],
+    }
 
 
 def _create_profile_database(database_url: str, profile: Profile) -> None:
@@ -253,3 +294,152 @@ def test_profile_stylesheet_is_served_with_mobile_responsive_rules() -> None:
     assert response.headers["content-type"].startswith("text/css")
     assert "@media" in response.text
     assert "max-width" in response.text
+
+
+def test_first_database_outage_renders_bundled_truthful_fallback(
+    tmp_path, monkeypatch, caplog
+) -> None:
+    monkeypatch.setattr(
+        "app.main.PROFILE_CACHE_PATH", tmp_path / "profile-cache.json", raising=False
+    )
+    _install_unavailable_database(monkeypatch)
+
+    with caplog.at_level(logging.ERROR, logger="app.main"):
+        response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert "Business Analytics Senior" in response.text
+    assert "Your Name" in response.text
+    assert "Add a short professional summary." in response.text
+    assert "profile data is temporarily unavailable" in response.text
+    assert "Traceback" not in response.text
+    assert "Public profile database read failed" in caplog.text
+    assert not (tmp_path / "profile-cache.json").exists()
+
+
+def test_database_outage_renders_last_known_good_cache(tmp_path, monkeypatch) -> None:
+    cache_path = tmp_path / "profile-cache.json"
+    cache_path.write_text(json.dumps(_cached_profile("Saved Profile")), encoding="utf-8")
+    monkeypatch.setattr("app.main.PROFILE_CACHE_PATH", cache_path, raising=False)
+    _install_unavailable_database(monkeypatch)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert "Saved Profile" in response.text
+    assert "Business Analytics Senior" in response.text
+    assert "profile data is temporarily unavailable" in response.text
+
+
+def test_live_profile_refreshes_cache_and_cached_copy_survives_outage(
+    tmp_path, monkeypatch
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'profile.db'}"
+    cache_path = tmp_path / "data" / "profile-cache.json"
+    monkeypatch.setattr("app.main.PROFILE_CACHE_PATH", cache_path, raising=False)
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Live Profile",
+            headline="Business Analytics Senior",
+            summary="Live profile summary.",
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    live_response = TestClient(app).get("/")
+
+    assert live_response.status_code == 200
+    assert "Live Profile" in live_response.text
+    snapshot = json.loads(cache_path.read_text(encoding="utf-8"))
+    assert snapshot["display_name"] == "Live Profile"
+    assert snapshot["summary"] == "Live profile summary."
+
+    _install_unavailable_database(monkeypatch)
+    outage_response = TestClient(app).get("/")
+
+    assert outage_response.status_code == 200
+    assert "Live Profile" in outage_response.text
+    assert "Live profile summary." in outage_response.text
+
+
+def test_cache_write_failure_does_not_break_live_rendering(
+    tmp_path, monkeypatch, caplog
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'profile.db'}"
+    monkeypatch.setattr("app.main.PROFILE_CACHE_PATH", tmp_path, raising=False)
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Live Profile",
+            headline="Business Analytics Senior",
+            summary="Live profile summary.",
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    with caplog.at_level(logging.ERROR, logger="app.main"):
+        response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert "Live Profile" in response.text
+    assert "Could not refresh public profile cache" in caplog.text
+
+
+def test_missing_profile_is_not_replaced_by_cached_fallback(tmp_path, monkeypatch) -> None:
+    database_url = f"sqlite:///{tmp_path / 'empty.db'}"
+    engine = create_database_engine(database_url)
+    Base.metadata.create_all(engine)
+    engine.dispose()
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    monkeypatch.setattr(
+        "app.main.PROFILE_CACHE_PATH", tmp_path / "profile-cache.json", raising=False
+    )
+    (tmp_path / "profile-cache.json").write_text(
+        json.dumps(_cached_profile("Must Not Render")), encoding="utf-8"
+    )
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 404
+    assert "Must Not Render" not in response.text
+
+
+def test_unreadable_bundled_fallback_surfaces_explicit_error(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        "app.main.PROFILE_CACHE_PATH", tmp_path / "missing-cache.json", raising=False
+    )
+    invalid_fallback = tmp_path / "invalid-fallback.json"
+    invalid_fallback.write_text("{not valid json", encoding="utf-8")
+    monkeypatch.setattr(
+        "app.main.BUNDLED_FALLBACK_PATH", invalid_fallback, raising=False
+    )
+    _install_unavailable_database(monkeypatch)
+
+    response = TestClient(app, raise_server_exceptions=False).get("/")
+
+    assert response.status_code == 500
+    assert "Profile fallback is unavailable" in response.text
+
+
+@pytest.mark.parametrize(
+    "bad_snapshot",
+    ["{not valid json", json.dumps({"display_name": "Missing required fields"})],
+)
+def test_unusable_cache_uses_bundled_fallback(
+    tmp_path, monkeypatch, bad_snapshot
+) -> None:
+    cache_path = tmp_path / "profile-cache.json"
+    cache_path.write_text(bad_snapshot, encoding="utf-8")
+    monkeypatch.setattr("app.main.PROFILE_CACHE_PATH", cache_path, raising=False)
+    _install_unavailable_database(monkeypatch)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert "Business Analytics Senior" in response.text
+    assert "profile data is temporarily unavailable" in response.text

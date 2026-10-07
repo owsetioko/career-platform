@@ -9,6 +9,11 @@
   </head>
   <body>
     <main class="profile">
+      {% if fallback_source %}
+        <p class="fallback-notice" role="status">
+          This is the {{ fallback_source }} because live profile data is temporarily unavailable.
+        </p>
+      {% endif %}
       <header class="profile-header">
         <p class="eyebrow">Professional profile</p>
         <h1>{{ profile.display_name }}</h1>

@@ -18,9 +18,13 @@ In Codespaces, open the forwarded port 8000 to view the public profile. Run
 and editable `owner` profile. The initializer is safe to run more than once. Its
 starter profile contains placeholder values; replace them and add real profile
 records before sharing the page. The profile is rendered from the database and
-its stylesheet is served from `/static`. By default, the database is stored in
-the ignored `data/resume.db`; set `DATABASE_URL` in `.env` to use a different
-SQLAlchemy database URL.
+its stylesheet is served from `/static`. If a public profile database read
+fails, the page uses the last-known-good snapshot at the ignored
+`data/public-profile.json`; if no usable snapshot exists yet, the bundled
+starter profile keeps the page available with clearly marked placeholders.
+Successful reads refresh the snapshot atomically. By default, the database is
+stored in the ignored `data/resume.db`; set `DATABASE_URL` in `.env` to use a
+different SQLAlchemy database URL.
 
 ## Run tests
 

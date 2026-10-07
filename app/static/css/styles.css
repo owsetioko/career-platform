@@ -34,6 +34,16 @@ body {
   border-bottom: 1px solid #e5ece9;
 }
 
+.fallback-notice {
+  margin: 0 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border-left: 0.25rem solid #b57418;
+  border-radius: 0.25rem;
+  background: #fff7e8;
+  color: #63430f;
+  line-height: 1.5;
+}
+
 .eyebrow {
   margin: 0 0 0.75rem;
   color: #17776d;
