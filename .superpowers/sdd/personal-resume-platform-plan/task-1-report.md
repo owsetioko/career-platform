@@ -54,3 +54,33 @@ Started Uvicorn locally and requested both the home page and the stylesheet.
 Both `curl --fail` requests succeeded. The HTML included the expected title,
 heading, and stylesheet URL; the stylesheet response included the `.app-shell`
 rule.
+
+## Review follow-up: configurable title portability
+
+The smoke test asserted the default title literally, although the app supports
+an `APP_TITLE` override. Reproduced the issue before editing:
+
+```text
+$ APP_TITLE='Portable Test Title' python -m pytest -q tests/test_app.py
+F                                                                        [100%]
+E       assert '<h1>Personal Resume Platform</h1>' in response.text
+... rendered HTML contained <h1>Portable Test Title</h1> ...
+1 failed in 0.48s
+```
+
+Changed only the test assertion to compare the rendered heading with
+`app.title`; application behavior is unchanged.
+
+Verification:
+
+```text
+$ python -m pytest -q tests/test_app.py
+.                                                                        [100%]
+1 passed in 1.21s
+
+$ APP_TITLE='Portable Test Title' python -m pytest -q tests/test_app.py
+.                                                                        [100%]
+1 passed in 1.15s
+```
+
+Concern status: resolved; default and custom-title environments pass.

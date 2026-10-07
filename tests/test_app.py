@@ -8,4 +8,4 @@ def test_home_page_renders_the_app_shell() -> None:
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/html")
-    assert "<h1>Personal Resume Platform</h1>" in response.text
+    assert f"<h1>{app.title}</h1>" in response.text
