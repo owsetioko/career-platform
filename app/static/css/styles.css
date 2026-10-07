@@ -76,8 +76,8 @@ h2 {
   --ink-soft: #5b4a39;
   --ink-faint: #6a5642;
   --rule: #8a6a48;
-  --stamp: #b3302a;
-  --stamp-deep: #8e2420;
+  --stamp: #c4302b;
+  --stamp-deep: #9a2420;
   --face-text: "Sofia Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --face-label: "Sofia Sans Condensed", "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
   --gap: clamp(1rem, 2.5vw, 1.5rem);
@@ -86,9 +86,8 @@ h2 {
   padding: clamp(0.75rem, 4vw, 3.5rem) clamp(0.75rem, 4vw, 2rem);
   background-color: var(--kraft);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.035' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.24 0 0 0 0 0.15 0 0 0 0 0.06 0 0 0 0.55 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(90deg, rgb(60 36 12 / 5%) 0 2px, transparent 2px 9px),
-    linear-gradient(180deg, rgb(255 236 200 / 12%), rgb(60 36 12 / 10%));
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7 0.18' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.24 0 0 0 0 0.15 0 0 0 0 0.06 0 0 0 0.28 -0.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgb(255 236 200 / 10%), rgb(255 236 200 / 0%));
   color: var(--ink);
   font-family: var(--face-text);
   font-size: 1.0625rem;
@@ -205,9 +204,9 @@ h2 {
   grid-area: contact;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  min-width: 15rem;
+  justify-content: flex-start;
+  gap: 1.25rem;
+  min-width: 17rem;
   padding: var(--pad);
   border-left: 2px solid var(--ink);
 }
@@ -215,7 +214,7 @@ h2 {
 .public .label-contact-lede {
   margin: 0;
   font-family: var(--face-label);
-  font-size: 1.35rem;
+  font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1.1;
@@ -243,14 +242,14 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  min-height: 2.9rem;
-  padding: 0.45rem 1.1rem 0.4rem;
+  min-height: 3.6rem;
+  padding: 0.55rem 1.3rem 0.45rem;
   border: 3px solid var(--stamp);
   border-radius: 5px;
   box-shadow: inset 0 0 0 2px var(--stock), inset 0 0 0 3.5px var(--stamp);
   color: var(--stamp);
   font-family: var(--face-label);
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 850;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -300,8 +299,35 @@ h2 {
 
 /* Contents manifest: jump links with quantities, along the label's foot. */
 .public .manifest {
+  position: relative;
   grid-area: manifest;
-  border-top: 2px solid var(--ink);
+  padding-top: 14px;
+  background:
+    radial-gradient(circle at 50% 7px, var(--kraft) 0 3.5px, var(--ink) 3.5px 5px, transparent 5.5px)
+    0 0 / 18px 14px repeat-x;
+}
+
+/* Half-round notches where the stub tears off the label. */
+.public .manifest::before,
+.public .manifest::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--kraft);
+}
+
+.public .manifest::before {
+  left: -13px;
+  clip-path: inset(0 0 0 50%);
+}
+
+.public .manifest::after {
+  right: -13px;
+  clip-path: inset(0 50% 0 0);
 }
 
 .public .manifest ul {
@@ -517,7 +543,7 @@ h2 {
 
 .public .skill-list li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.7rem;
   padding: 0.45rem 0;
   break-inside: avoid;
@@ -530,6 +556,8 @@ h2 {
   flex: 0 0 auto;
   width: 0.95rem;
   height: 0.95rem;
+  box-sizing: border-box;
+  margin-top: 0.18em;
   border: 2px solid var(--ink);
   border-radius: 2px;
   background:
@@ -562,7 +590,7 @@ h2 {
 .public .slip-foot p {
   margin: 0;
   font-family: var(--face-label);
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   font-weight: 750;
   letter-spacing: 0.03em;
 }
@@ -615,6 +643,16 @@ h2 {
 
   .public .entry-heading {
     flex-direction: column;
+  }
+
+  .public .skill-list {
+    columns: 2 8rem;
+    column-gap: 1rem;
+  }
+
+  .public .skill-list li {
+    gap: 0.5rem;
+    font-size: 1rem;
   }
 }
 
