@@ -13,12 +13,14 @@ python -m app.database
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-In Codespaces, open the forwarded port 8000 to view the app. The root page
-renders the Jinja2 app shell; its stylesheet is served from `/static`.
-The database initializer creates the SQLite schema and an editable starter
-profile with placeholder content. It is safe to run more than once. By default,
-the database is stored in the ignored `data/resume.db`; set `DATABASE_URL` in
-`.env` to use a different SQLAlchemy database URL.
+In Codespaces, open the forwarded port 8000 to view the public profile. Run
+`python -m app.database` before starting the app to initialize the SQLite schema
+and editable `owner` profile. The initializer is safe to run more than once. Its
+starter profile contains placeholder values; replace them and add real profile
+records before sharing the page. The profile is rendered from the database and
+its stylesheet is served from `/static`. By default, the database is stored in
+the ignored `data/resume.db`; set `DATABASE_URL` in `.env` to use a different
+SQLAlchemy database URL.
 
 ## Run tests
 
@@ -28,5 +30,5 @@ python -m pytest
 
 The environment file configures the app title and database URL. The storage
 layer includes profile, experience, skill, project, project-tag, and education
-records. Public profile rendering, admin features, and deployment configuration
-are separate follow-up tasks.
+records. Admin features and deployment configuration are separate follow-up
+tasks.
