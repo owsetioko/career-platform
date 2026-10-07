@@ -1,0 +1,29 @@
+{% extends "admin_base.html" %}
+{% block title %}{% if record_id %}Edit{% else %}Add{% endif %} {{ label|lower }}{% endblock %}
+{% block content %}
+  <h1>{% if record_id %}Edit{% else %}Add{% endif %} {{ label|lower }}</h1>
+  {% if errors %}
+    <div class="admin-error" role="alert">
+      <p>Please correct the following:</p>
+      <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+  <form method="post" action="{% if record_id %}/admin/{{ kind }}/{{ record_id }}/edit{% else %}/admin/{{ kind }}/new{% endif %}" class="admin-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    {% for field in fields %}
+      <label for="{{ field.name }}">{{ field.label }}{% if field.required %} <span>(required)</span>{% endif %}</label>
+      {% if field.type == "textarea" %}
+        <textarea id="{{ field.name }}" name="{{ field.name }}" maxlength="{{ field.max_length or '' }}" {% if field.required %}required{% endif %}>{{ values.get(field.name, "") }}</textarea>
+      {% else %}
+        <input id="{{ field.name }}" name="{{ field.name }}" type="{{ field.type }}" value="{{ values.get(field.name, "") }}" maxlength="{{ field.max_length or '' }}" {% if field.required %}required{% endif %}>
+      {% endif %}
+    {% endfor %}
+    <label for="display_order">Display order</label>
+    <input id="display_order" name="display_order" type="number" min="0" max="1000000" value="{{ values.get('display_order', '0') }}" required>
+    <label class="admin-checkbox" for="is_visible">
+      <input id="is_visible" name="is_visible" type="checkbox" value="on" {% if is_visible %}checked{% endif %}>
+      Visible on public profile
+    </label>
+    <button type="submit">Save {{ label|lower }}</button>
+  </form>
+{% endblock %}

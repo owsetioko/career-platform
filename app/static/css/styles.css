@@ -1,0 +1,387 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1b2e3b;
+  background: #f3f6f5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(1.25rem, 5vw, 4rem);
+}
+
+.profile {
+  width: min(100%, 58rem);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 6vw, 4.5rem);
+  border: 1px solid #dce5e2;
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 1.5rem 4rem rgb(27 46 59 / 7%);
+}
+
+.profile-header {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e5ece9;
+}
+
+.fallback-notice {
+  margin: 0 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border-left: 0.25rem solid #b57418;
+  border-radius: 0.25rem;
+  background: #fff7e8;
+  color: #63430f;
+  line-height: 1.5;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: #17776d;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  overflow-wrap: anywhere;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 7vw, 4rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.headline {
+  margin: 0.75rem 0 0;
+  color: #315164;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 550;
+  line-height: 1.4;
+}
+
+.summary {
+  max-width: 48rem;
+  margin: 1.25rem 0 0;
+  color: #506571;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  white-space: pre-line;
+}
+
+.profile-section {
+  padding: 2rem 0;
+  border-bottom: 1px solid #e5ece9;
+}
+
+.profile-section:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+h2 {
+  margin: 0 0 1.25rem;
+  color: #263e4b;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.entry-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.entry {
+  min-width: 0;
+}
+
+.entry + .entry {
+  padding-top: 1.5rem;
+  border-top: 1px solid #edf1ef;
+}
+
+.entry-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+h3 {
+  margin: 0;
+  color: #1f3b4a;
+  font-size: 1.08rem;
+  line-height: 1.45;
+}
+
+h3 a {
+  color: inherit;
+  text-decoration-color: #8eb8ae;
+  text-underline-offset: 0.2em;
+}
+
+h3 a:hover {
+  color: #126d63;
+}
+
+.entry-subtitle,
+.entry-location,
+.entry-dates {
+  margin: 0.3rem 0 0;
+  color: #536b78;
+  line-height: 1.5;
+}
+
+.entry-dates {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+  color: #627781;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.entry-location {
+  font-size: 0.95rem;
+}
+
+.entry-description {
+  margin: 0.75rem 0 0;
+  color: #425965;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-list li {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #d8e7e2;
+  border-radius: 999px;
+  background: #f4f9f7;
+  color: #31594f;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.skill-list {
+  margin-top: 0;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-links a {
+  display: inline-block;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #b8d8cf;
+  border-radius: 0.5rem;
+  color: #155e55;
+  font-weight: 650;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.contact-links a:hover {
+  background: #f4f9f7;
+}
+
+.empty-state {
+  margin: 0;
+  color: #637780;
+  line-height: 1.6;
+}
+
+.admin {
+  width: min(100%, 48rem);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid #dce5e2;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 1.5rem 4rem rgb(27 46 59 / 7%);
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-nav form,
+.admin-list form {
+  margin: 0;
+}
+
+.admin-nav a,
+.admin-list a,
+.admin-link {
+  color: #155e55;
+  font-weight: 650;
+  text-underline-offset: 0.2em;
+}
+
+.admin-section {
+  padding: 1.25rem 0;
+  border-top: 1px solid #e5ece9;
+}
+
+.admin-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem;
+  border: 1px solid #e5ece9;
+  border-radius: 0.5rem;
+}
+
+.admin-list li > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.admin-list span {
+  color: #536b78;
+  font-size: 0.9rem;
+}
+
+.admin-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-form label {
+  margin-top: 0.65rem;
+  color: #263e4b;
+  font-weight: 650;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin input[type="password"] {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #aebfbc;
+  border-radius: 0.4rem;
+  color: #1b2e3b;
+  font: inherit;
+}
+
+.admin-form textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.admin-form .admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+}
+
+.admin-form .admin-checkbox input {
+  width: auto;
+}
+
+.admin button {
+  width: fit-content;
+  margin-top: 0.75rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: #155e55;
+  color: #fff;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.admin .text-button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #155e55;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.admin .danger-button {
+  background: #8d3030;
+}
+
+.admin-error {
+  padding: 0.8rem 1rem;
+  border-left: 0.25rem solid #a33737;
+  border-radius: 0.25rem;
+  background: #fff0f0;
+  color: #6f2020;
+}
+
+@media (max-width: 40rem) {
+  body {
+    padding: 0.75rem;
+  }
+
+  .profile {
+    padding: 1.5rem 1.15rem;
+    border-radius: 0.8rem;
+  }
+
+  .profile-header {
+    padding-bottom: 1.75rem;
+  }
+
+  .profile-section {
+    padding: 1.5rem 0;
+  }
+
+  .entry-heading {
+    display: block;
+  }
+
+  .entry-dates {
+    text-align: left;
+  }
+
+  .admin-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

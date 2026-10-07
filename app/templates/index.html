@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ page_description }}">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+  </head>
+  <body>
+    <main class="profile">
+      {% if fallback_source %}
+        <p class="fallback-notice" role="status">
+          This is the {{ fallback_source }} because live profile data is temporarily unavailable.
+        </p>
+      {% endif %}
+      <header class="profile-header">
+        <p class="eyebrow">Professional profile</p>
+        <h1>{{ profile.display_name }}</h1>
+        {% if profile.headline %}
+          <p class="headline">{{ profile.headline }}</p>
+        {% endif %}
+        <p class="summary">
+          {% if profile.summary %}
+            {{ profile.summary }}
+          {% else %}
+            No professional summary provided.
+          {% endif %}
+        </p>
+      </header>
+
+      <section class="profile-section" id="experience" aria-labelledby="experience-heading">
+        <h2 id="experience-heading">Experience</h2>
+        {% if profile.experiences %}
+          <div class="entry-list">
+            {% for experience in profile.experiences %}
+              <article class="entry">
+                <div class="entry-heading">
+                  <div>
+                    <h3>{{ experience.title }}</h3>
+                    <p class="entry-subtitle">{{ experience.company }}</p>
+                  </div>
+                  {% if experience.start_date or experience.end_date %}
+                    <p class="entry-dates">
+                      {% if experience.start_date %}
+                        <time datetime="{{ experience.start_date.isoformat() }}">{{ experience.start_date.strftime("%b %Y") }}</time>
+                      {% endif %}
+                      {% if experience.start_date and experience.end_date %}–{% endif %}
+                      {% if experience.end_date %}
+                        <time datetime="{{ experience.end_date.isoformat() }}">{{ experience.end_date.strftime("%b %Y") }}</time>
+                      {% endif %}
+                    </p>
+                  {% endif %}
+                </div>
+                {% if experience.location %}
+                  <p class="entry-location">{{ experience.location }}</p>
+                {% endif %}
+                {% if experience.description %}
+                  <p class="entry-description">{{ experience.description }}</p>
+                {% endif %}
+                {% if experience.skills %}
+                  <ul class="tag-list" aria-label="Skills used">
+                    {% for skill in experience.skills %}
+                      <li>{{ skill.name }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">No experience listed yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="profile-section" id="skills" aria-labelledby="skills-heading">
+        <h2 id="skills-heading">Skills</h2>
+        {% if profile.skills %}
+          <ul class="tag-list skill-list">
+            {% for skill in profile.skills %}
+              <li>{{ skill.name }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="empty-state">No skills listed yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="profile-section" id="projects" aria-labelledby="projects-heading">
+        <h2 id="projects-heading">Projects</h2>
+        {% if profile.projects %}
+          <div class="entry-list project-list">
+            {% for project in profile.projects %}
+              <article class="entry">
+                <h3>
+                  {% if project.url %}
+                    <a href="{{ project.url }}">{{ project.name }}</a>
+                  {% else %}
+                    {{ project.name }}
+                  {% endif %}
+                </h3>
+                {% if project.description %}
+                  <p class="entry-description">{{ project.description }}</p>
+                {% endif %}
+                {% if project.skills or project.tags %}
+                  <ul class="tag-list">
+                    {% for skill in project.skills %}
+                      <li>{{ skill.name }}</li>
+                    {% endfor %}
+                    {% for tag in project.tags|sort(attribute="name") %}
+                      <li>{{ tag.name }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">No projects listed yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="profile-section" id="education" aria-labelledby="education-heading">
+        <h2 id="education-heading">Education</h2>
+        {% if profile.education %}
+          <div class="entry-list">
+            {% for education in profile.education %}
+              <article class="entry">
+                <h3>{{ education.institution }}</h3>
+                {% if education.degree or education.field_of_study %}
+                  <p class="entry-subtitle">
+                    {{ education.degree }}{% if education.degree and education.field_of_study %}, {% endif %}{{ education.field_of_study }}
+                  </p>
+                {% endif %}
+                {% if education.start_date or education.end_date %}
+                  <p class="entry-dates">
+                    {% if education.start_date %}
+                      <time datetime="{{ education.start_date.isoformat() }}">{{ education.start_date.strftime("%Y") }}</time>
+                    {% endif %}
+                    {% if education.start_date and education.end_date %}–{% endif %}
+                    {% if education.end_date %}
+                      <time datetime="{{ education.end_date.isoformat() }}">{{ education.end_date.strftime("%Y") }}</time>
+                    {% endif %}
+                  </p>
+                {% endif %}
+                {% if education.description %}
+                  <p class="entry-description">{{ education.description }}</p>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">No education listed yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="profile-section contact-section" id="contact" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact</h2>
+        {% if profile.email or profile.website or profile.linkedin_url or profile.github_url %}
+          <ul class="contact-links">
+            {% if profile.email %}
+              <li><a href="mailto:{{ profile.email }}">Email</a></li>
+            {% endif %}
+            {% if profile.website %}
+              <li><a href="{{ profile.website }}">Website</a></li>
+            {% endif %}
+            {% if profile.linkedin_url %}
+              <li><a href="{{ profile.linkedin_url }}">LinkedIn</a></li>
+            {% endif %}
+            {% if profile.github_url %}
+              <li><a href="{{ profile.github_url }}">GitHub</a></li>
+            {% endif %}
+          </ul>
+        {% else %}
+          <p class="empty-state">No contact methods have been provided.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
