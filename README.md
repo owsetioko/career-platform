@@ -155,8 +155,8 @@ admin credentials.
 
 These notes describe a possible later single-VM setup; they do not create Azure
 resources or deploy the app. Plan to use a supported Linux VM, install a
-maintained Python 3.10+ runtime, and install the pinned project requirements
-into a virtual environment. Keep the deployment code separate from the
+maintained Python 3.10+ runtime, and install the version-constrained project
+requirements into a virtual environment. Keep the deployment code separate from the
 persistent data disk, and test upgrades and restores before relying on the
 site.
 

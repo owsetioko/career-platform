@@ -66,3 +66,9 @@ documented but has not been validated against a provisioned VM, reverse proxy,
 firewall, or backup service; those remain future deployment tasks. SQLite is
 intended for one VM and one worker, not horizontally scaled app instances.
 Nothing was pushed to GitHub.
+
+### Documentation finding fix
+
+Updated the README wording from “pinned project requirements” to
+“version-constrained project requirements” to accurately describe dependency
+version ranges.
