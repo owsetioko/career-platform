@@ -77,7 +77,7 @@
         <h2 id="skills-heading">Skills</h2>
         {% if profile.skills %}
           <ul class="tag-list skill-list">
-            {% for skill in profile.skills|sort(attribute="name") %}
+            {% for skill in profile.skills %}
               <li>{{ skill.name }}</li>
             {% endfor %}
           </ul>

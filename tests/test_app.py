@@ -132,6 +132,48 @@ def test_public_profile_renders_persisted_content_in_recruiter_friendly_order(
     assert 'content="Turns complex data into useful insights."' in response.text
 
 
+def test_public_profile_renders_profile_skills_in_configured_order(
+    tmp_path, monkeypatch
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'ordered-profile-skills.db'}"
+    alpha_skill = Skill(name="Alpha", display_order=2)
+    beta_skill = Skill(name="Beta", display_order=0)
+    zulu_skill = Skill(name="Zulu", display_order=1)
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Jordan Lee",
+            headline="Data Analyst",
+            summary="",
+            skills=[alpha_skill, beta_skill, zulu_skill],
+            experiences=[
+                Experience(
+                    title="Data Analyst",
+                    company="Example Organization",
+                    skills=[alpha_skill, beta_skill, zulu_skill],
+                )
+            ],
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    profile_skills = response.text.split(
+        '<section class="profile-section" id="skills"', 1
+    )[1].split("</section>", 1)[0]
+    assert profile_skills.index("Beta") < profile_skills.index("Zulu")
+    assert profile_skills.index("Zulu") < profile_skills.index("Alpha")
+
+    experience_section = response.text.split(
+        '<section class="profile-section" id="experience"', 1
+    )[1].split('<section class="profile-section"', 1)[0]
+    assert experience_section.index("Beta") < experience_section.index("Zulu")
+    assert experience_section.index("Zulu") < experience_section.index("Alpha")
+
+
 def test_public_profile_shows_empty_states_and_omits_missing_optional_values(
     tmp_path, monkeypatch
 ) -> None:

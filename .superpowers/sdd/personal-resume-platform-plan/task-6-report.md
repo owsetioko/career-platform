@@ -72,3 +72,13 @@ Nothing was pushed to GitHub.
 Updated the README wording from “pinned project requirements” to
 “version-constrained project requirements” to accurately describe dependency
 version ranges.
+
+### Public skills ordering fix
+
+Removed the alphabetical sort from the public profile Skills section so skills
+follow the profile relationship's configured `display_order`. Added a regression
+test using skill names that sort differently alphabetically and by configured
+order; it also confirms nested experience skill ordering remains unchanged.
+The regression test failed before the template fix as expected. Focused public
+page tests (`python -m pytest -q tests/test_app.py`) passed (16 tests), and the
+full suite (`python -m pytest -q`) passed (50 tests).
