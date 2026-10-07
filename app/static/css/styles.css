@@ -1,3 +1,8 @@
+/* ------------------------------------------------------------------
+   Shared base (admin pages inherit these; the public page overrides
+   them under .public below).
+   ------------------------------------------------------------------ */
+
 :root {
   color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -19,40 +24,6 @@ body {
   padding: clamp(1.25rem, 5vw, 4rem);
 }
 
-.profile {
-  width: min(100%, 58rem);
-  margin: 0 auto;
-  padding: clamp(1.5rem, 6vw, 4.5rem);
-  border: 1px solid #dce5e2;
-  border-radius: 1.25rem;
-  background: #fff;
-  box-shadow: 0 1.5rem 4rem rgb(27 46 59 / 7%);
-}
-
-.profile-header {
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid #e5ece9;
-}
-
-.fallback-notice {
-  margin: 0 0 1.5rem;
-  padding: 0.85rem 1rem;
-  border-left: 0.25rem solid #b57418;
-  border-radius: 0.25rem;
-  background: #fff7e8;
-  color: #63430f;
-  line-height: 1.5;
-}
-
-.eyebrow {
-  margin: 0 0 0.75rem;
-  color: #17776d;
-  font-size: 0.78rem;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 h1,
 h2,
 h3,
@@ -67,33 +38,6 @@ h1 {
   line-height: 1.05;
 }
 
-.headline {
-  margin: 0.75rem 0 0;
-  color: #315164;
-  font-size: clamp(1.2rem, 3vw, 1.6rem);
-  font-weight: 550;
-  line-height: 1.4;
-}
-
-.summary {
-  max-width: 48rem;
-  margin: 1.25rem 0 0;
-  color: #506571;
-  font-size: 1.05rem;
-  line-height: 1.75;
-  white-space: pre-line;
-}
-
-.profile-section {
-  padding: 2rem 0;
-  border-bottom: 1px solid #e5ece9;
-}
-
-.profile-section:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
 h2 {
   margin: 0 0 1.25rem;
   color: #263e4b;
@@ -101,94 +45,185 @@ h2 {
   letter-spacing: -0.02em;
 }
 
-.entry-list {
-  display: grid;
-  gap: 1.5rem;
+/* ------------------------------------------------------------------
+   Public profile: "Dispatch Box"
+   Kraft board ground, label-stock slips, ink rules, and a single
+   rubber-stamp red reserved for the contact action.
+   ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Sofia Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../fonts/sofia-sans-latin.woff2") format("woff2");
 }
 
-.entry {
-  min-width: 0;
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: normal;
+  font-weight: 500 900;
+  font-display: swap;
+  src: url("../fonts/sofia-sans-condensed-latin.woff2") format("woff2");
 }
 
-.entry + .entry {
-  padding-top: 1.5rem;
-  border-top: 1px solid #edf1ef;
+.public {
+  --kraft: #b48656;
+  --kraft-deep: #9c7144;
+  --stock: #f7f2e7;
+  --stock-shade: #ece3d1;
+  --ink: #1f1a15;
+  --ink-soft: #5b4a39;
+  --ink-faint: #6a5642;
+  --rule: #8a6a48;
+  --stamp: #b3302a;
+  --stamp-deep: #8e2420;
+  --face-text: "Sofia Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --face-label: "Sofia Sans Condensed", "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
+  --gap: clamp(1rem, 2.5vw, 1.5rem);
+  --pad: clamp(1.15rem, 4vw, 2.5rem);
+
+  padding: clamp(0.75rem, 4vw, 3.5rem) clamp(0.75rem, 4vw, 2rem);
+  background-color: var(--kraft);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.035' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.24 0 0 0 0 0.15 0 0 0 0 0.06 0 0 0 0.55 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(90deg, rgb(60 36 12 / 5%) 0 2px, transparent 2px 9px),
+    linear-gradient(180deg, rgb(255 236 200 / 12%), rgb(60 36 12 / 10%));
+  color: var(--ink);
+  font-family: var(--face-text);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  accent-color: var(--stamp);
+  scrollbar-color: var(--ink) var(--kraft-deep);
 }
 
-.entry-heading {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+.public ::selection {
+  background: var(--ink);
+  color: var(--stock);
 }
 
-h3 {
-  margin: 0;
-  color: #1f3b4a;
-  font-size: 1.08rem;
-  line-height: 1.45;
+.public :focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-h3 a {
+.public a {
   color: inherit;
-  text-decoration-color: #8eb8ae;
-  text-underline-offset: 0.2em;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.22em;
 }
 
-h3 a:hover {
-  color: #126d63;
+.public h1,
+.public h2,
+.public h3,
+.public p {
+  overflow-wrap: break-word;
 }
 
-.entry-subtitle,
-.entry-location,
-.entry-dates {
-  margin: 0.3rem 0 0;
-  color: #536b78;
+.public .profile {
+  display: grid;
+  gap: var(--gap);
+  width: min(100%, 62rem);
+  margin: 0 auto;
+}
+
+/* Every slip is label stock laid on the board. */
+.public .profile-header,
+.public .profile-section {
+  position: relative;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--stock);
+  box-shadow:
+    0 1px 0 rgb(255 240 210 / 40%) inset,
+    0 2px 0 rgb(40 22 6 / 22%),
+    0 14px 26px -16px rgb(40 22 6 / 60%);
+}
+
+/* ---------- Fallback notice: a dispatch sticker ---------- */
+
+.public .fallback-notice {
+  margin: 0;
+  padding: 0.85rem 1.1rem;
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  background: var(--stock);
+  color: var(--ink);
+  font-weight: 600;
   line-height: 1.5;
 }
 
-.entry-dates {
-  flex: 0 0 auto;
-  margin-top: 0.1rem;
-  color: #627781;
-  font-size: 0.9rem;
-  text-align: right;
+/* ---------- Shipping label ---------- */
+
+.public .profile-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "identity contact"
+    "manifest manifest";
 }
 
-.entry-location {
-  font-size: 0.95rem;
+.public .label-identity {
+  grid-area: identity;
+  padding: var(--pad);
 }
 
-.entry-description {
-  margin: 0.75rem 0 0;
-  color: #425965;
-  line-height: 1.7;
-  white-space: pre-line;
+.public h1 {
+  margin: 0;
+  max-width: 14ch;
+  font-family: var(--face-label);
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  line-height: 0.88;
+  text-transform: uppercase;
+  text-wrap: balance;
 }
 
-.tag-list {
+.public .headline {
+  max-width: 40ch;
+  margin: 1rem 0 0;
+  color: var(--ink);
+  font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+  font-weight: 650;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.public .summary {
+  max-width: 60ch;
+  margin: 1.25rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 2px dashed var(--rule);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.public .label-contact {
+  grid-area: contact;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.85rem 0 0;
-  padding: 0;
-  list-style: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  min-width: 15rem;
+  padding: var(--pad);
+  border-left: 2px solid var(--ink);
 }
 
-.tag-list li {
-  padding: 0.35rem 0.7rem;
-  border: 1px solid #d8e7e2;
-  border-radius: 999px;
-  background: #f4f9f7;
-  color: #31594f;
-  font-size: 0.85rem;
-  line-height: 1.3;
+.public .label-contact-lede {
+  margin: 0;
+  font-family: var(--face-label);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
-.skill-list {
-  margin-top: 0;
-}
-
-.contact-links {
+.public .stamp-list,
+.public .contact-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -197,26 +232,534 @@ h3 a:hover {
   list-style: none;
 }
 
-.contact-links a {
-  display: inline-block;
-  padding: 0.6rem 0.9rem;
-  border: 1px solid #b8d8cf;
-  border-radius: 0.5rem;
-  color: #155e55;
-  font-weight: 650;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.2em;
+.public .stamp-list {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.contact-links a:hover {
-  background: #f4f9f7;
+/* The rubber stamp: the only red on the page. */
+.public .stamp,
+.public .contact-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.9rem;
+  padding: 0.45rem 1.1rem 0.4rem;
+  border: 3px solid var(--stamp);
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 2px var(--stock), inset 0 0 0 3.5px var(--stamp);
+  color: var(--stamp);
+  font-family: var(--face-label);
+  font-size: 1.5rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
 }
 
-.empty-state {
+.public .stamp::after,
+.public .contact-links a::after {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-top: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.public .stamp:hover,
+.public .contact-links a:hover {
+  background: var(--stamp);
+  box-shadow: inset 0 0 0 2px var(--stamp), inset 0 0 0 3.5px var(--stock);
+  color: var(--stock);
+}
+
+.public .stamp:active,
+.public .contact-links a:active {
+  background: var(--stamp-deep);
+  border-color: var(--stamp-deep);
+  transform: rotate(-2deg) translateY(1px) scale(0.98);
+}
+
+.public .stamp:focus-visible,
+.public .contact-links a:focus-visible {
+  outline-color: var(--stamp);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .public .stamp,
+  .public .contact-links a {
+    transition:
+      background-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Contents manifest: jump links with quantities, along the label's foot. */
+.public .manifest {
+  grid-area: manifest;
+  border-top: 2px solid var(--ink);
+}
+
+.public .manifest ul {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   margin: 0;
-  color: #637780;
+  padding: 0;
+  list-style: none;
+}
+
+.public .manifest li + li {
+  border-left: 2px solid var(--ink);
+}
+
+.public .manifest a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0.85rem 1rem;
+  font-family: var(--face-label);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.public .manifest a:hover {
+  background: var(--ink);
+  color: var(--stock);
+}
+
+.public .manifest a:focus-visible {
+  outline-offset: -5px;
+}
+
+.public .manifest-count {
+  font-size: 1.6rem;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* ---------- Packing slips (sections) ---------- */
+
+.public .profile-section {
+  padding: 0 var(--pad) var(--pad);
+}
+
+.public .slip-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 calc(var(--pad) * -1) var(--pad);
+  padding: 0.8rem var(--pad) 0.7rem;
+  background: var(--ink);
+  color: var(--stock);
+  border-radius: 3px 3px 0 0;
+}
+
+.public h2 {
+  margin: 0;
+  color: inherit;
+  font-family: var(--face-label);
+  font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.public .slip-count {
+  margin: 0;
+  font-family: var(--face-label);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.public .entry-list {
+  display: grid;
+  gap: 0;
+}
+
+.public .entry {
+  min-width: 0;
+  padding: 1.35rem 0;
+}
+
+.public .entry:first-child {
+  padding-top: 0;
+}
+
+.public .entry:last-child {
+  padding-bottom: 0;
+}
+
+.public .entry + .entry {
+  border-top: 2px dashed var(--rule);
+}
+
+/* Rank by inversion: the lead experience line prints reversed. */
+.public #experience .entry:first-child {
+  margin: 0 0 0.25rem;
+  padding: 1.25rem 1.35rem 1.35rem;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--stock);
+}
+
+.public #experience .entry:first-child .entry-subtitle,
+.public #experience .entry:first-child .entry-dates,
+.public #experience .entry:first-child .entry-description,
+.public #experience .entry:first-child .used-list {
+  color: var(--stock-shade);
+}
+
+.public #experience .entry:first-child + .entry {
+  border-top: 0;
+}
+
+.public .entry-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+}
+
+.public h3 {
+  margin: 0;
+  font-family: var(--face-label);
+  font-size: clamp(1.35rem, 2.6vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.public h3 a {
+  text-decoration-color: var(--rule);
+}
+
+.public h3 a:hover {
+  text-decoration-color: currentColor;
+}
+
+.public .entry-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--ink-soft);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.public .entry-location {
+  font-weight: 500;
+}
+
+.public .entry-dates {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--face-label);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.public .entry-description {
+  max-width: 60ch;
+  margin: 0.7rem 0 0;
+  color: var(--ink);
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+/* Skills used on a line item: quiet typed text, not chips. */
+.public .used-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  color: var(--ink-soft);
+  font-family: var(--face-label);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  list-style: none;
+}
+
+.public .used-list li:not(:last-child)::after {
+  content: "/";
+  padding: 0 0.55em;
+  opacity: 0.7;
+}
+
+/* Skills: the contents checklist. */
+.public .skill-list {
+  columns: 3 9.5rem;
+  column-gap: 2rem;
+  column-rule: 2px dashed var(--rule);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.public .skill-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0;
+  break-inside: avoid;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.public .skill-list li::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  background:
+    linear-gradient(45deg, transparent 44%, var(--ink) 44% 56%, transparent 56%),
+    linear-gradient(-45deg, transparent 44%, var(--ink) 44% 56%, transparent 56%);
+}
+
+/* ---------- Closing slip: contact ---------- */
+
+.public .contact-lede {
+  max-width: 52ch;
+  margin: 0 0 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.public .empty-state {
+  margin: 0;
+  color: var(--ink-faint);
+  font-style: italic;
   line-height: 1.6;
 }
+
+.public .slip-foot {
+  padding: 0.25rem 0 0;
+  color: var(--ink);
+  text-align: center;
+}
+
+.public .slip-foot p {
+  margin: 0;
+  font-family: var(--face-label);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 48rem) {
+  .public .profile-header {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "identity"
+      "contact"
+      "manifest";
+  }
+
+  .public .label-contact {
+    min-width: 0;
+    border-top: 2px solid var(--ink);
+    border-left: 0;
+  }
+
+  .public .stamp-list {
+    flex-direction: row;
+  }
+
+  .public .manifest ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .public .manifest li + li {
+    border-left: 0;
+  }
+
+  .public .manifest li {
+    border-top: 2px solid var(--ink);
+  }
+
+  .public .manifest li:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .public .manifest li:nth-child(even) {
+    border-left: 2px solid var(--ink);
+  }
+
+  .public .manifest li:last-child {
+    grid-column: 1 / -1;
+    border-left: 0;
+  }
+
+  .public .entry-heading {
+    flex-direction: column;
+  }
+}
+
+/* ---------- Print: a clean one-colour resume ---------- */
+
+@media print {
+  .public {
+    padding: 0;
+    background: #fff;
+    color: #000;
+    font-size: 10.5pt;
+  }
+
+  .public .profile {
+    gap: 0;
+    width: 100%;
+  }
+
+  .public .profile-header,
+  .public .profile-section {
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .public .profile-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "identity contact";
+    border-bottom: 2px solid #000;
+  }
+
+  .public .label-contact {
+    justify-content: flex-start;
+    border-top: 0;
+  }
+
+  .public .label-contact-lede {
+    font-size: 11pt;
+  }
+
+  .public .label-identity,
+  .public .label-contact {
+    padding: 0 0 12pt;
+  }
+
+  .public .label-contact {
+    padding-left: 12pt;
+    border-left: 0;
+  }
+
+  .public h1 {
+    font-size: 30pt;
+  }
+
+  .public .manifest,
+  .public .slip-count,
+  .public .slip-foot,
+  .public .contact-section {
+    display: none;
+  }
+
+  .public .profile-section {
+    padding: 12pt 0 0;
+  }
+
+  .public .slip-head {
+    margin: 0 0 8pt;
+    padding: 0 0 3pt;
+    border-bottom: 1px solid #000;
+    background: none;
+    color: #000;
+  }
+
+  .public h2 {
+    font-size: 15pt;
+  }
+
+  .public h3 {
+    font-size: 12.5pt;
+  }
+
+  .public #experience .entry:first-child {
+    margin: 0;
+    padding: 0 0 8pt;
+    background: none;
+    color: #000;
+  }
+
+  .public #experience .entry:first-child .entry-subtitle,
+  .public #experience .entry:first-child .entry-dates,
+  .public #experience .entry:first-child .entry-description,
+  .public #experience .entry:first-child .used-list {
+    color: #000;
+  }
+
+  .public .entry {
+    padding: 8pt 0;
+    break-inside: avoid;
+  }
+
+  .public .entry + .entry {
+    border-top: 1px solid #999;
+  }
+
+  .public .stamp {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    color: #000;
+    font-size: 11pt;
+    letter-spacing: 0.04em;
+    transform: none;
+  }
+
+  .public .stamp::after {
+    content: none;
+  }
+
+  .public .stamp[href^="http"]::after,
+  .public .stamp[href^="mailto:"]::after {
+    content: " " attr(href);
+    width: auto;
+    height: auto;
+    border: 0;
+    font-family: var(--face-text);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    transform: none;
+  }
+
+  .public .skill-list {
+    columns: 3;
+    column-rule: 0;
+  }
+
+  .public .skill-list li {
+    padding: 1pt 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Admin pages
+   ------------------------------------------------------------------ */
 
 .admin {
   width: min(100%, 48rem);
@@ -354,30 +897,10 @@ h3 a:hover {
   color: #6f2020;
 }
 
+
 @media (max-width: 40rem) {
   body {
     padding: 0.75rem;
-  }
-
-  .profile {
-    padding: 1.5rem 1.15rem;
-    border-radius: 0.8rem;
-  }
-
-  .profile-header {
-    padding-bottom: 1.75rem;
-  }
-
-  .profile-section {
-    padding: 1.5rem 0;
-  }
-
-  .entry-heading {
-    display: block;
-  }
-
-  .entry-dates {
-    text-align: left;
   }
 
   .admin-list li {
