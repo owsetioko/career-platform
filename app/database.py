@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy import (
+    Boolean,
     Column,
     Date,
     ForeignKey,
@@ -74,16 +75,24 @@ class Profile(Base):
     github_url: Mapped[str | None] = mapped_column(String(1000), default=None)
 
     experiences: Mapped[list[Experience]] = relationship(
-        back_populates="profile", cascade="all, delete-orphan"
+        back_populates="profile",
+        cascade="all, delete-orphan",
+        order_by=lambda: (Experience.display_order, Experience.id),
     )
     skills: Mapped[list[Skill]] = relationship(
-        back_populates="profile", cascade="all, delete-orphan"
+        back_populates="profile",
+        cascade="all, delete-orphan",
+        order_by=lambda: (Skill.display_order, Skill.id),
     )
     projects: Mapped[list[Project]] = relationship(
-        back_populates="profile", cascade="all, delete-orphan"
+        back_populates="profile",
+        cascade="all, delete-orphan",
+        order_by=lambda: (Project.display_order, Project.id),
     )
     education: Mapped[list[Education]] = relationship(
-        back_populates="profile", cascade="all, delete-orphan"
+        back_populates="profile",
+        cascade="all, delete-orphan",
+        order_by=lambda: (Education.display_order, Education.id),
     )
 
 
@@ -96,6 +105,12 @@ class Skill(Base):
         ForeignKey("profiles.id", ondelete="CASCADE"), index=True
     )
     name: Mapped[str] = mapped_column(String(120))
+    display_order: Mapped[int] = mapped_column(
+        default=0, server_default="0", nullable=False
+    )
+    is_visible: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="1", nullable=False
+    )
 
     profile: Mapped[Profile] = relationship(back_populates="skills")
     experiences: Mapped[list[Experience]] = relationship(
@@ -119,6 +134,12 @@ class Experience(Base):
     description: Mapped[str | None] = mapped_column(String(4000), default=None)
     start_date: Mapped[date | None] = mapped_column(Date, default=None)
     end_date: Mapped[date | None] = mapped_column(Date, default=None)
+    display_order: Mapped[int] = mapped_column(
+        default=0, server_default="0", nullable=False
+    )
+    is_visible: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="1", nullable=False
+    )
 
     profile: Mapped[Profile] = relationship(back_populates="experiences")
     skills: Mapped[list[Skill]] = relationship(
@@ -136,6 +157,12 @@ class Project(Base):
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str | None] = mapped_column(String(4000), default=None)
     url: Mapped[str | None] = mapped_column(String(1000), default=None)
+    display_order: Mapped[int] = mapped_column(
+        default=0, server_default="0", nullable=False
+    )
+    is_visible: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="1", nullable=False
+    )
 
     profile: Mapped[Profile] = relationship(back_populates="projects")
     skills: Mapped[list[Skill]] = relationship(
@@ -172,6 +199,12 @@ class Education(Base):
     start_date: Mapped[date | None] = mapped_column(Date, default=None)
     end_date: Mapped[date | None] = mapped_column(Date, default=None)
     description: Mapped[str | None] = mapped_column(String(4000), default=None)
+    display_order: Mapped[int] = mapped_column(
+        default=0, server_default="0", nullable=False
+    )
+    is_visible: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="1", nullable=False
+    )
 
     profile: Mapped[Profile] = relationship(back_populates="education")
 
@@ -227,10 +260,30 @@ def _add_missing_profile_contact_columns(engine: Engine) -> None:
                 )
 
 
+def _add_missing_content_display_columns(engine: Engine) -> None:
+    display_columns = {
+        "display_order": "INTEGER NOT NULL DEFAULT 0",
+        "is_visible": "BOOLEAN NOT NULL DEFAULT 1",
+    }
+    for table in ("experiences", "skills", "projects", "education"):
+        if not inspect(engine).has_table(table):
+            continue
+        existing_columns = {
+            column["name"] for column in inspect(engine).get_columns(table)
+        }
+        with engine.begin() as connection:
+            for name, column_type in display_columns.items():
+                if name not in existing_columns:
+                    connection.exec_driver_sql(
+                        f"ALTER TABLE {table} ADD COLUMN {name} {column_type}"
+                    )
+
+
 def initialize_database(engine: Engine | None = None) -> Engine:
     database_engine = engine or create_database_engine()
     Base.metadata.create_all(database_engine)
     _add_missing_profile_contact_columns(database_engine)
+    _add_missing_content_display_columns(database_engine)
 
     with Session(database_engine) as session, session.begin():
         starter_profile = session.scalar(

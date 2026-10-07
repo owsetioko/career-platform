@@ -192,6 +192,104 @@ def test_initialization_adds_contact_fields_to_existing_sqlite_profile(
     engine.dispose()
 
 
+def test_initialization_adds_admin_fields_to_legacy_content_tables(tmp_path) -> None:
+    engine = create_database_engine(f"sqlite:///{tmp_path / 'legacy-admin.db'}")
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                "CREATE TABLE profiles ("
+                "id INTEGER PRIMARY KEY, slug VARCHAR(80) NOT NULL UNIQUE, "
+                "display_name VARCHAR(160) NOT NULL, headline VARCHAR(240) NOT NULL, "
+                "summary VARCHAR(2000) NOT NULL)"
+            )
+        )
+        connection.execute(
+            text(
+                "CREATE TABLE experiences ("
+                "id INTEGER PRIMARY KEY, profile_id INTEGER NOT NULL, "
+                "title VARCHAR(200) NOT NULL, company VARCHAR(200) NOT NULL, "
+                "location VARCHAR(200), description VARCHAR(4000), "
+                "start_date DATE, end_date DATE)"
+            )
+        )
+        connection.execute(
+            text(
+                "CREATE TABLE skills ("
+                "id INTEGER PRIMARY KEY, profile_id INTEGER NOT NULL, "
+                "name VARCHAR(120) NOT NULL, UNIQUE (profile_id, name))"
+            )
+        )
+        connection.execute(
+            text(
+                "CREATE TABLE projects ("
+                "id INTEGER PRIMARY KEY, profile_id INTEGER NOT NULL, "
+                "name VARCHAR(200) NOT NULL, description VARCHAR(4000), "
+                "url VARCHAR(1000))"
+            )
+        )
+        connection.execute(
+            text(
+                "CREATE TABLE education ("
+                "id INTEGER PRIMARY KEY, profile_id INTEGER NOT NULL, "
+                "institution VARCHAR(200) NOT NULL, degree VARCHAR(200), "
+                "field_of_study VARCHAR(200), start_date DATE, end_date DATE, "
+                "description VARCHAR(4000))"
+            )
+        )
+        connection.execute(
+            text(
+                "INSERT INTO profiles (slug, display_name, headline, summary) "
+                "VALUES ('owner', 'Example Person', 'Analyst', 'Summary')"
+            )
+        )
+        connection.execute(
+            text(
+                "INSERT INTO experiences "
+                "(profile_id, title, company) VALUES (1, 'Analyst', 'Example Co')"
+            )
+        )
+        connection.execute(
+            text("INSERT INTO skills (profile_id, name) VALUES (1, 'SQL')")
+        )
+        connection.execute(
+            text("INSERT INTO projects (profile_id, name) VALUES (1, 'Portfolio')")
+        )
+        connection.execute(
+            text(
+                "INSERT INTO education (profile_id, institution) "
+                "VALUES (1, 'Example University')"
+            )
+        )
+
+    initialize_database(engine)
+
+    profile_columns = {column["name"] for column in inspect(engine).get_columns("profiles")}
+    assert {"email", "website", "linkedin_url", "github_url"}.issubset(
+        profile_columns
+    )
+    for table in ("experiences", "skills", "projects", "education"):
+        columns = {column["name"] for column in inspect(engine).get_columns(table)}
+        assert {"display_order", "is_visible"}.issubset(columns)
+    with Session(engine) as session:
+        for model, identity in (
+            (Experience, "Analyst"),
+            (Skill, "SQL"),
+            (Project, "Portfolio"),
+            (Education, "Example University"),
+        ):
+            record = session.scalar(select(model))
+            assert record is not None
+            if model is Experience:
+                assert record.title == identity
+            elif model is Skill or model is Project:
+                assert record.name == identity
+            else:
+                assert record.institution == identity
+            assert record.display_order == 0
+            assert record.is_visible is True
+    engine.dispose()
+
+
 def test_database_url_uses_configured_environment_value(monkeypatch) -> None:
     monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
 

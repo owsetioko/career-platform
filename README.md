@@ -34,5 +34,34 @@ python -m pytest
 
 The environment file configures the app title and database URL. The storage
 layer includes profile, experience, skill, project, project-tag, and education
-records. Admin features and deployment configuration are separate follow-up
-tasks.
+records.
+
+## Owner admin
+
+Admin pages are available at `/admin`. Admin remains unavailable until both
+`ADMIN_PASSWORD_HASH` and `SESSION_SECRET` are set; public profile pages still
+work when admin is not configured. Keep these values in the ignored local
+`.env` file or a deployment secret manager, never in source control. Do not put
+the plain-text password in `.env`.
+
+Create an Argon2id hash locally with a password prompt that does not echo the
+password:
+
+```bash
+python -c 'from getpass import getpass; from argon2 import PasswordHasher; print(PasswordHasher().hash(getpass("Admin password: ")))'
+```
+
+Generate a signing key with:
+
+```bash
+python -c 'import secrets; print(secrets.token_urlsafe(48))'
+```
+
+Copy the generated hash and signing key into the untracked `.env` file as
+`ADMIN_PASSWORD_HASH` and `SESSION_SECRET`. Do not use a short or reused
+session key; at least 32 bytes are required. `SESSION_COOKIE_SECURE=false` is
+the local HTTP default; set `SESSION_COOKIE_SECURE=true` whenever the site is
+served over HTTPS. Cookies are HttpOnly and SameSite=Lax, and admin form
+submissions require CSRF tokens. Sign in with the configured password, then
+edit the profile and manage experience, skills, projects, and education from
+the dashboard. Each content record can be hidden and assigned a display order.

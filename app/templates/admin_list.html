@@ -1,0 +1,29 @@
+{% extends "admin_base.html" %}
+{% block title %}{{ spec.label }}{% endblock %}
+{% block content %}
+  <h1>{{ spec.label }} records</h1>
+  <p><a class="admin-link" href="/admin/{{ kind }}/new">Add {{ spec.label|lower }}</a></p>
+  {% if records %}
+    <ul class="admin-list">
+      {% for record in records %}
+        <li>
+          <div>
+            <strong>
+              {% if kind == "experiences" %}{{ record.title }} — {{ record.company }}
+              {% elif kind == "education" %}{{ record.institution }}
+              {% else %}{{ record.name }}{% endif %}
+            </strong>
+            <span>Order {{ record.display_order }} · {% if record.is_visible %}Visible{% else %}Hidden{% endif %}</span>
+          </div>
+          <a href="/admin/{{ kind }}/{{ record.id }}/edit">Edit</a>
+          <form method="post" action="/admin/{{ kind }}/{{ record.id }}/delete">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="danger-button">Delete</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No records yet.</p>
+  {% endif %}
+{% endblock %}

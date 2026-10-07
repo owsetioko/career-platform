@@ -1,0 +1,23 @@
+{% extends "admin_base.html" %}
+{% block title %}Edit profile{% endblock %}
+{% block content %}
+  <h1>Edit profile</h1>
+  {% if errors %}
+    <div class="admin-error" role="alert">
+      <p>Please correct the following:</p>
+      <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+  <form method="post" action="/admin/profile" class="admin-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    {% for field in fields %}
+      <label for="{{ field.name }}">{{ field.label }}{% if field.required %} <span>(required)</span>{% endif %}</label>
+      {% if field.type == "textarea" %}
+        <textarea id="{{ field.name }}" name="{{ field.name }}" maxlength="{{ field.max_length or '' }}" {% if field.required %}required{% endif %}>{{ values.get(field.name, "") }}</textarea>
+      {% else %}
+        <input id="{{ field.name }}" name="{{ field.name }}" type="{{ field.type }}" value="{{ values.get(field.name, "") }}" maxlength="{{ field.max_length or '' }}" {% if field.required %}required{% endif %}>
+      {% endif %}
+    {% endfor %}
+    <button type="submit">Save profile</button>
+  </form>
+{% endblock %}

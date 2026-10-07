@@ -218,6 +218,142 @@ h3 a:hover {
   line-height: 1.6;
 }
 
+.admin {
+  width: min(100%, 48rem);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid #dce5e2;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 1.5rem 4rem rgb(27 46 59 / 7%);
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-nav form,
+.admin-list form {
+  margin: 0;
+}
+
+.admin-nav a,
+.admin-list a,
+.admin-link {
+  color: #155e55;
+  font-weight: 650;
+  text-underline-offset: 0.2em;
+}
+
+.admin-section {
+  padding: 1.25rem 0;
+  border-top: 1px solid #e5ece9;
+}
+
+.admin-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem;
+  border: 1px solid #e5ece9;
+  border-radius: 0.5rem;
+}
+
+.admin-list li > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.admin-list span {
+  color: #536b78;
+  font-size: 0.9rem;
+}
+
+.admin-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-form label {
+  margin-top: 0.65rem;
+  color: #263e4b;
+  font-weight: 650;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin input[type="password"] {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #aebfbc;
+  border-radius: 0.4rem;
+  color: #1b2e3b;
+  font: inherit;
+}
+
+.admin-form textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.admin-form .admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+}
+
+.admin-form .admin-checkbox input {
+  width: auto;
+}
+
+.admin button {
+  width: fit-content;
+  margin-top: 0.75rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: #155e55;
+  color: #fff;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.admin .text-button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #155e55;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.admin .danger-button {
+  background: #8d3030;
+}
+
+.admin-error {
+  padding: 0.8rem 1rem;
+  border-left: 0.25rem solid #a33737;
+  border-radius: 0.25rem;
+  background: #fff0f0;
+  color: #6f2020;
+}
+
 @media (max-width: 40rem) {
   body {
     padding: 0.75rem;
@@ -242,5 +378,10 @@ h3 a:hover {
 
   .entry-dates {
     text-align: left;
+  }
+
+  .admin-list li {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

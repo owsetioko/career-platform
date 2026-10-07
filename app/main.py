@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import secrets
 import tempfile
 from contextlib import suppress
 from datetime import date
@@ -16,8 +17,10 @@ from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session, selectinload
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.templating import Jinja2Templates
 
+from app.admin import build_admin_router, is_argon2id_hash
 from app.database import (
     Experience,
     Profile,
@@ -32,12 +35,6 @@ BUNDLED_FALLBACK_PATH = APP_DIR / "fallback-profile.json"
 logger = logging.getLogger(__name__)
 load_dotenv(APP_DIR.parent / ".env")
 
-app = FastAPI(title=os.getenv("APP_TITLE", "Personal Resume Platform"))
-app.mount(
-    "/static",
-    StaticFiles(directory=APP_DIR / "static"),
-    name="static",
-)
 templates = Jinja2Templates(directory=APP_DIR / "templates")
 
 
@@ -72,20 +69,32 @@ def _serialize_profile(profile: Profile) -> dict:
                 "description": experience.description,
                 "start_date": date_value(experience.start_date),
                 "end_date": date_value(experience.end_date),
-                "skills": [{"name": skill.name} for skill in experience.skills],
+                "skills": [
+                    {"name": skill.name}
+                    for skill in experience.skills
+                    if skill.is_visible
+                ],
             }
             for experience in profile.experiences
+            if experience.is_visible
         ],
-        "skills": [{"name": skill.name} for skill in profile.skills],
+        "skills": [
+            {"name": skill.name} for skill in profile.skills if skill.is_visible
+        ],
         "projects": [
             {
                 "name": project.name,
                 "description": project.description,
                 "url": project.url,
-                "skills": [{"name": skill.name} for skill in project.skills],
+                "skills": [
+                    {"name": skill.name}
+                    for skill in project.skills
+                    if skill.is_visible
+                ],
                 "tags": [{"name": tag.name} for tag in project.tags],
             }
             for project in profile.projects
+            if project.is_visible
         ],
         "education": [
             {
@@ -97,6 +106,7 @@ def _serialize_profile(profile: Profile) -> dict:
                 "description": education.description,
             }
             for education in profile.education
+            if education.is_visible
         ],
     }
 
@@ -292,28 +302,56 @@ def _render_profile(request: Request, data: dict, fallback_source: str | None = 
     )
 
 
-@app.get("/")
-async def home(request: Request, session: Session = Depends(get_session)):
-    statement = (
-        select(Profile)
-        .where(Profile.slug == "owner")
-        .options(
-            selectinload(Profile.experiences).selectinload(Experience.skills),
-            selectinload(Profile.skills),
-            selectinload(Profile.projects).selectinload(Project.skills),
-            selectinload(Profile.projects).selectinload(Project.tags),
-            selectinload(Profile.education),
-        )
+def create_app() -> FastAPI:
+    session_secret = os.getenv("SESSION_SECRET", "")
+    password_hash = os.getenv("ADMIN_PASSWORD_HASH", "")
+    session_configured = len(session_secret.encode("utf-8")) >= 32
+    hash_configured = is_argon2id_hash(password_hash)
+    application = FastAPI(title=os.getenv("APP_TITLE", "Personal Resume Platform"))
+    application.state.admin_configured = session_configured and hash_configured
+    application.state.admin_password_hash = password_hash
+    application.add_middleware(
+        SessionMiddleware,
+        secret_key=session_secret or secrets.token_urlsafe(48),
+        session_cookie="resume_session",
+        same_site="lax",
+        https_only=os.getenv("SESSION_COOKIE_SECURE", "").strip().lower()
+        in {"1", "true", "yes", "on"},
     )
-    try:
-        profile = session.scalar(statement)
-        if profile is None:
-            raise HTTPException(status_code=404, detail="Public profile not found")
-        public_data = _serialize_profile(profile)
-    except DBAPIError:
-        logger.exception("Public profile database read failed")
-        fallback_data, fallback_source = _fallback_data()
-        return _render_profile(request, fallback_data, fallback_source)
+    application.mount(
+        "/static",
+        StaticFiles(directory=APP_DIR / "static"),
+        name="static",
+    )
 
-    _write_snapshot(public_data)
-    return _render_profile(request, public_data)
+    @application.get("/")
+    async def home(request: Request, session: Session = Depends(get_session)):
+        statement = (
+            select(Profile)
+            .where(Profile.slug == "owner")
+            .options(
+                selectinload(Profile.experiences).selectinload(Experience.skills),
+                selectinload(Profile.skills),
+                selectinload(Profile.projects).selectinload(Project.skills),
+                selectinload(Profile.projects).selectinload(Project.tags),
+                selectinload(Profile.education),
+            )
+        )
+        try:
+            profile = session.scalar(statement)
+            if profile is None:
+                raise HTTPException(status_code=404, detail="Public profile not found")
+            public_data = _serialize_profile(profile)
+        except DBAPIError:
+            logger.exception("Public profile database read failed")
+            fallback_data, fallback_source = _fallback_data()
+            return _render_profile(request, fallback_data, fallback_source)
+
+        _write_snapshot(public_data)
+        return _render_profile(request, public_data)
+
+    application.include_router(build_admin_router(templates, get_session))
+    return application
+
+
+app = create_app()
