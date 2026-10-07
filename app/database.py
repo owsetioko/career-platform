@@ -15,6 +15,7 @@ from sqlalchemy import (
     URL,
     create_engine,
     event,
+    inspect,
     select,
 )
 from sqlalchemy.engine import Engine, make_url
@@ -67,6 +68,10 @@ class Profile(Base):
     display_name: Mapped[str] = mapped_column(String(160))
     headline: Mapped[str] = mapped_column(String(240))
     summary: Mapped[str] = mapped_column(String(2000))
+    email: Mapped[str | None] = mapped_column(String(320), default=None)
+    website: Mapped[str | None] = mapped_column(String(1000), default=None)
+    linkedin_url: Mapped[str | None] = mapped_column(String(1000), default=None)
+    github_url: Mapped[str | None] = mapped_column(String(1000), default=None)
 
     experiences: Mapped[list[Experience]] = relationship(
         back_populates="profile", cascade="all, delete-orphan"
@@ -201,9 +206,31 @@ def create_database_engine(database_url: str | None = None) -> Engine:
     return engine
 
 
+def _add_missing_profile_contact_columns(engine: Engine) -> None:
+    if not inspect(engine).has_table("profiles"):
+        return
+
+    existing_columns = {
+        column["name"] for column in inspect(engine).get_columns("profiles")
+    }
+    contact_columns = {
+        "email": "VARCHAR(320)",
+        "website": "VARCHAR(1000)",
+        "linkedin_url": "VARCHAR(1000)",
+        "github_url": "VARCHAR(1000)",
+    }
+    with engine.begin() as connection:
+        for name, column_type in contact_columns.items():
+            if name not in existing_columns:
+                connection.exec_driver_sql(
+                    f"ALTER TABLE profiles ADD COLUMN {name} {column_type}"
+                )
+
+
 def initialize_database(engine: Engine | None = None) -> Engine:
     database_engine = engine or create_database_engine()
     Base.metadata.create_all(database_engine)
+    _add_missing_profile_contact_columns(database_engine)
 
     with Session(database_engine) as session, session.begin():
         starter_profile = session.scalar(

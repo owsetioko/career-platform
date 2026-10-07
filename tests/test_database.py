@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import inspect, select
+from sqlalchemy import inspect, select, text
 from sqlalchemy.orm import Session
 
 from app.database import (
@@ -112,6 +112,83 @@ def test_profile_content_and_skill_and_tag_relationships_round_trip() -> None:
         }
         assert loaded_profile.education[0].institution == "Example University"
         assert loaded_profile.experiences[0].start_date == date(2024, 1, 1)
+    engine.dispose()
+
+
+def test_profile_contact_fields_round_trip() -> None:
+    engine = create_database_engine("sqlite:///:memory:")
+    initialize_database(engine)
+
+    with Session(engine) as session:
+        profile = Profile(
+            slug="contact-example",
+            display_name="Example Person",
+            headline="Analytics Example",
+            summary="Example profile summary.",
+            email="person@example.com",
+            website="https://example.com",
+            linkedin_url="https://www.linkedin.com/in/example",
+            github_url="https://github.com/example",
+        )
+        session.add(profile)
+        session.commit()
+        session.expire_all()
+
+        loaded_profile = session.scalar(
+            select(Profile).where(Profile.slug == "contact-example")
+        )
+
+        assert loaded_profile is not None
+        assert loaded_profile.email == "person@example.com"
+        assert loaded_profile.website == "https://example.com"
+        assert loaded_profile.linkedin_url == "https://www.linkedin.com/in/example"
+        assert loaded_profile.github_url == "https://github.com/example"
+    engine.dispose()
+
+
+def test_initialization_adds_contact_fields_to_existing_sqlite_profile(
+    tmp_path,
+) -> None:
+    engine = create_database_engine(f"sqlite:///{tmp_path / 'legacy-profile.db'}")
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                "CREATE TABLE profiles ("
+                "id INTEGER PRIMARY KEY, "
+                "slug VARCHAR(80) NOT NULL UNIQUE, "
+                "display_name VARCHAR(160) NOT NULL, "
+                "headline VARCHAR(240) NOT NULL, "
+                "summary VARCHAR(2000) NOT NULL)"
+            )
+        )
+        connection.execute(
+            text(
+                "INSERT INTO profiles (slug, display_name, headline, summary) "
+                "VALUES ('owner', 'Example Person', 'Analytics Example', "
+                "'Example profile summary.')"
+            )
+        )
+
+    initialize_database(engine)
+
+    with Session(engine) as session:
+        profile = session.scalar(select(Profile).where(Profile.slug == "owner"))
+
+        assert profile is not None
+        assert profile.email is None
+        assert profile.website is None
+        assert profile.linkedin_url is None
+        assert profile.github_url is None
+        profile.email = "person@example.com"
+        session.commit()
+        session.expire_all()
+
+        reloaded_profile = session.scalar(
+            select(Profile).where(Profile.slug == "owner")
+        )
+
+        assert reloaded_profile is not None
+        assert reloaded_profile.email == "person@example.com"
     engine.dispose()
 
 

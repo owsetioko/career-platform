@@ -148,6 +148,28 @@
           <p class="empty-state">No education listed yet.</p>
         {% endif %}
       </section>
+
+      <section class="profile-section contact-section" id="contact" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact</h2>
+        {% if profile.email or profile.website or profile.linkedin_url or profile.github_url %}
+          <ul class="contact-links">
+            {% if profile.email %}
+              <li><a href="mailto:{{ profile.email }}">Email</a></li>
+            {% endif %}
+            {% if profile.website %}
+              <li><a href="{{ profile.website }}">Website</a></li>
+            {% endif %}
+            {% if profile.linkedin_url %}
+              <li><a href="{{ profile.linkedin_url }}">LinkedIn</a></li>
+            {% endif %}
+            {% if profile.github_url %}
+              <li><a href="{{ profile.github_url }}">GitHub</a></li>
+            {% endif %}
+          </ul>
+        {% else %}
+          <p class="empty-state">No contact methods have been provided.</p>
+        {% endif %}
+      </section>
     </main>
   </body>
 </html>

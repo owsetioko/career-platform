@@ -158,6 +158,94 @@ def test_public_profile_shows_empty_states_for_unpopulated_sections(
     assert "No education listed yet." in response.text
 
 
+def test_public_profile_shows_only_configured_contact_links(
+    tmp_path, monkeypatch
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'profile-with-contact.db'}"
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Jordan Lee",
+            headline="Data Analyst",
+            summary="",
+            email="jordan@example.com",
+            website="https://jordan.example.com",
+            linkedin_url="https://www.linkedin.com/in/jordan-lee",
+            github_url="https://github.com/jordan-lee",
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert (
+        '<section class="profile-section contact-section" id="contact"'
+        in response.text
+    )
+    assert 'aria-labelledby="contact-heading"' in response.text
+    assert "<h2 id=\"contact-heading\">Contact</h2>" in response.text
+    assert '<a href="mailto:jordan@example.com">Email</a>' in response.text
+    assert '<a href="https://jordan.example.com">Website</a>' in response.text
+    assert (
+        '<a href="https://www.linkedin.com/in/jordan-lee">LinkedIn</a>'
+        in response.text
+    )
+    assert '<a href="https://github.com/jordan-lee">GitHub</a>' in response.text
+
+
+def test_public_profile_omits_unconfigured_contact_links(tmp_path, monkeypatch) -> None:
+    database_url = f"sqlite:///{tmp_path / 'profile-partial-contact.db'}"
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Jordan Lee",
+            headline="Data Analyst",
+            summary="",
+            email="jordan@example.com",
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert '<a href="mailto:jordan@example.com">Email</a>' in response.text
+    assert "Website" not in response.text
+    assert "LinkedIn" not in response.text
+    assert "GitHub" not in response.text
+
+
+def test_public_profile_shows_truthful_empty_contact_state(
+    tmp_path, monkeypatch
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'profile-without-contact.db'}"
+    _create_profile_database(
+        database_url,
+        Profile(
+            slug="owner",
+            display_name="Jordan Lee",
+            headline="Data Analyst",
+            summary="",
+        ),
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert (
+        '<section class="profile-section contact-section" id="contact"'
+        in response.text
+    )
+    assert "<h2 id=\"contact-heading\">Contact</h2>" in response.text
+    assert "No contact methods have been provided." in response.text
+    assert "mailto:" not in response.text
+    assert "linkedin.com" not in response.text
+
+
 def test_profile_stylesheet_is_served_with_mobile_responsive_rules() -> None:
     response = TestClient(app).get("/static/css/styles.css")
 
