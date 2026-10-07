@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-07T11:44:00+00:00",
+  "title": "Design System: Chris Owen Setioko, Career Platform",
+  "extensions": {
+    "colorMeta": {
+      "kraft": {
+        "role": "neutral",
+        "displayName": "Kraft Board",
+        "canonical": "oklch(65.4% 0.086 66.6)",
+        "tonalRamp": [
+          "#200000",
+          "#3e1800",
+          "#5d3500",
+          "#7e5322",
+          "#a07343",
+          "#c39464",
+          "#eaba88",
+          "#ffe4b1"
+        ]
+      },
+      "kraft-deep": {
+        "role": "neutral",
+        "displayName": "Kraft Deep",
+        "canonical": "oklch(58.2% 0.082 66.3)",
+        "tonalRamp": [
+          "#200000",
+          "#3d1900",
+          "#5c3500",
+          "#7d5426",
+          "#9e7346",
+          "#c19467",
+          "#e9ba8b",
+          "#ffe4b4"
+        ]
+      },
+      "stock": {
+        "role": "neutral",
+        "displayName": "Label Stock",
+        "canonical": "oklch(96.2% 0.016 86.4)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#27241c",
+          "#433f37",
+          "#615d54",
+          "#817d73",
+          "#a39e94",
+          "#c8c4b9",
+          "#f3eee3"
+        ]
+      },
+      "stock-shade": {
+        "role": "neutral",
+        "displayName": "Stock Shade",
+        "canonical": "oklch(91.8% 0.026 84.6)",
+        "tonalRamp": [
+          "#100a01",
+          "#2a2315",
+          "#463f30",
+          "#645d4d",
+          "#847c6c",
+          "#a69d8d",
+          "#ccc3b2",
+          "#f7eedb"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Carton Ink",
+        "canonical": "oklch(22.2% 0.012 67.1)",
+        "tonalRamp": [
+          "#0f0a06",
+          "#28231e",
+          "#443f39",
+          "#625c56",
+          "#827c76",
+          "#a49d97",
+          "#cac3bc",
+          "#f4ede6"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Faded Ink",
+        "canonical": "oklch(42.2% 0.035 66.6)",
+        "tonalRamp": [
+          "#150800",
+          "#302111",
+          "#4d3c2c",
+          "#6c5a49",
+          "#8c7a67",
+          "#ae9b88",
+          "#d4c0ad",
+          "#ffebd6"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Pencil Ink",
+        "canonical": "oklch(46.8% 0.040 66.6)",
+        "tonalRamp": [
+          "#160700",
+          "#31200d",
+          "#4e3c28",
+          "#6e5945",
+          "#8e7964",
+          "#b09a84",
+          "#d7c0a9",
+          "#ffead3"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Tear-Line Brown",
+        "canonical": "oklch(54.8% 0.063 67.6)",
+        "tonalRamp": [
+          "#1b0400",
+          "#381d00",
+          "#563917",
+          "#765735",
+          "#977654",
+          "#b99774",
+          "#e0bd99",
+          "#ffe7c2"
+        ]
+      },
+      "stamp": {
+        "role": "primary",
+        "displayName": "Stamp Red",
+        "canonical": "oklch(54.2% 0.186 27.4)",
+        "tonalRamp": [
+          "#3c0000",
+          "#620000",
+          "#880000",
+          "#ae1417",
+          "#d5423a",
+          "#fd675b",
+          "#ff8e7f",
+          "#ffcfc2"
+        ]
+      },
+      "stamp-deep": {
+        "role": "primary",
+        "displayName": "Stamp Deep (pressed)",
+        "canonical": "oklch(45.4% 0.155 27.4)",
+        "tonalRamp": [
+          "#350000",
+          "#590000",
+          "#7e0004",
+          "#a32d28",
+          "#c95147",
+          "#ef7467",
+          "#ff9a8c",
+          "#ffcfc2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name on the shipping label, uppercase, max 14ch. One per page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Slip titles, uppercase, set in stock on the ink slip-head bar."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Entry titles. Always mixed case, because database titles can be long."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "The headline under the name, max 40ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Summary and entry descriptions, max 60ch, line-height 1.6 to 1.65."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Manifest cells, dates and slip counts. Uppercase and tracked."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Contact stamp text only."
+      },
+      "count": {
+        "displayName": "Count",
+        "purpose": "Manifest quantities, in tabular figures."
+      }
+    },
+    "shadows": [
+      {
+        "name": "label-stock",
+        "value": "0 1px 0 rgb(255 240 210 / 40%) inset, 0 2px 0 rgb(40 22 6 / 22%), 0 14px 26px -16px rgb(40 22 6 / 60%)",
+        "purpose": "Every slip (the shipping label and each section). Never on inner elements."
+      },
+      {
+        "name": "stamp-rim",
+        "value": "inset 0 0 0 2px #f7f2e7, inset 0 0 0 3.5px #c4302b",
+        "purpose": "Inner double rim of the contact stamp. It inverts on hover."
+      }
+    ],
+    "motion": [
+      {
+        "name": "stamp-press-ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Stamp colour change (140ms) and press transform (160ms), only under prefers-reduced-motion: no-preference."
+      },
+      {
+        "name": "stamp-press",
+        "value": "rotate(-2deg) translateY(1px) scale(0.98)",
+        "purpose": "Active state of the contact stamp."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow",
+        "value": "48rem"
+      }
+    ],
+    "textures": [
+      {
+        "name": "kraft-fibre",
+        "value": "SVG feTurbulence fractalNoise baseFrequency 0.7 0.18, 3 octaves, seed 7, brown colour matrix at about 28% alpha, 220px tile, over a 10% warm top gradient",
+        "purpose": "Corrugated fibre on the kraft ground."
+      }
+    ],
+    "scope": "Public profile only (body.public). The admin pages keep their older teal-on-gray styles (:root, global h1/h2, .admin*) on purpose. They are out of scope and not part of this system."
+  },
+  "components": [
+    {
+      "name": "Contact Stamp",
+      "kind": "button",
+      "refersTo": "stamp",
+      "description": "A hand-pressed rubber stamp. It is the only red on the page and is reserved for contact links.",
+      "html": "<div class=\"ds-board\"><a class=\"ds-stamp\" href=\"#\">GitHub</a></div>",
+      "css": ":host{--kraft:#b48656;--kraft-deep:#9c7144;--stock:#f7f2e7;--stock-shade:#ece3d1;--ink:#1f1a15;--ink-soft:#5b4a39;--ink-faint:#6a5642;--rule:#8a6a48;--stamp:#c4302b;--stamp-deep:#9a2420;} .ds-board{padding:24px;background:var(--stock);} .ds-stamp{display:inline-flex;align-items:center;gap:.6rem;min-height:3.6rem;padding:.55rem 1.3rem .45rem;border:3px solid var(--stamp);border-radius:5px;box-shadow:inset 0 0 0 2px var(--stock),inset 0 0 0 3.5px var(--stamp);color:var(--stamp);font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:2rem;font-weight:850;letter-spacing:.08em;line-height:1;text-decoration:none;text-transform:uppercase;transform:rotate(-2deg);transition:background-color 140ms cubic-bezier(.16,1,.3,1),color 140ms cubic-bezier(.16,1,.3,1),transform 160ms cubic-bezier(.16,1,.3,1);} .ds-stamp::after{content:'';width:.55em;height:.55em;border-top:3px solid currentColor;border-right:3px solid currentColor;transform:rotate(45deg);} .ds-stamp:hover{background:var(--stamp);box-shadow:inset 0 0 0 2px var(--stamp),inset 0 0 0 3.5px var(--stock);color:var(--stock);} .ds-stamp:active{background:var(--stamp-deep);border-color:var(--stamp-deep);transform:rotate(-2deg) translateY(1px) scale(.98);} .ds-stamp:focus-visible{outline:3px solid var(--stamp);outline-offset:3px;} @media (prefers-reduced-motion:reduce){.ds-stamp{transition:none;}}"
+    },
+    {
+      "name": "Slip",
+      "kind": "card",
+      "refersTo": "slip",
+      "description": "A label-stock packing slip laid on kraft board, with a full-bleed ink head bar and an item count.",
+      "html": "<div class=\"ds-ground\"><section class=\"ds-slip\"><div class=\"ds-slip-head\"><h2>Projects</h2><p>3 items</p></div><p class=\"ds-slip-body\">Line items sit here on label stock.</p></section></div>",
+      "css": ":host{--kraft:#b48656;--kraft-deep:#9c7144;--stock:#f7f2e7;--stock-shade:#ece3d1;--ink:#1f1a15;--ink-soft:#5b4a39;--ink-faint:#6a5642;--rule:#8a6a48;--stamp:#c4302b;--stamp-deep:#9a2420;} .ds-ground{padding:24px;background:var(--kraft);} .ds-slip{border:2px solid var(--ink);border-radius:6px;background:var(--stock);color:var(--ink);padding:0 1.5rem 1.5rem;box-shadow:0 1px 0 rgb(255 240 210 / 40%) inset,0 2px 0 rgb(40 22 6 / 22%),0 14px 26px -16px rgb(40 22 6 / 60%);font-family:'Sofia Sans',ui-sans-serif,system-ui,sans-serif;} .ds-slip-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin:0 -1.5rem 1.5rem;padding:.8rem 1.5rem .7rem;background:var(--ink);color:var(--stock);border-radius:3px 3px 0 0;} .ds-slip-head h2{margin:0;font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:2rem;font-weight:850;letter-spacing:.04em;line-height:1;text-transform:uppercase;} .ds-slip-head p{margin:0;font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-variant-numeric:tabular-nums;} .ds-slip-body{margin:0;font-size:1.0625rem;line-height:1.6;}"
+    },
+    {
+      "name": "Manifest",
+      "kind": "nav",
+      "refersTo": "manifest-cell",
+      "description": "Contents jump links with quantities, shaped as a perforated tear-off stub with half-round notches.",
+      "html": "<div class=\"ds-ground\"><div class=\"ds-label\"><nav class=\"ds-manifest\" aria-label=\"Page contents\"><ul><li><a href=\"#\">Experience <span>5</span></a></li><li><a href=\"#\">Skills <span>15</span></a></li><li><a href=\"#\">Projects <span>3</span></a></li><li><a href=\"#\">Contact</a></li></ul></nav></div></div>",
+      "css": ":host{--kraft:#b48656;--kraft-deep:#9c7144;--stock:#f7f2e7;--stock-shade:#ece3d1;--ink:#1f1a15;--ink-soft:#5b4a39;--ink-faint:#6a5642;--rule:#8a6a48;--stamp:#c4302b;--stamp-deep:#9a2420;} .ds-ground{padding:24px;background:var(--kraft);} .ds-label{border:2px solid var(--ink);border-radius:6px;background:var(--stock);color:var(--ink);padding-top:24px;} .ds-manifest{position:relative;padding-top:14px;background:radial-gradient(circle at 50% 7px,var(--kraft) 0 3.5px,var(--ink) 3.5px 5px,transparent 5.5px) 0 0/18px 14px repeat-x;} .ds-manifest::before,.ds-manifest::after{content:'';position:absolute;top:-4px;width:22px;height:22px;border:2px solid var(--ink);border-radius:50%;background:var(--kraft);} .ds-manifest::before{left:-13px;clip-path:inset(0 0 0 50%);} .ds-manifest::after{right:-13px;clip-path:inset(0 50% 0 0);} .ds-manifest ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;list-style:none;} .ds-manifest li+li{border-left:2px solid var(--ink);} .ds-manifest a{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;min-height:3.25rem;padding:.85rem 1rem;color:inherit;font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:1.05rem;font-weight:750;letter-spacing:.06em;text-decoration:none;text-transform:uppercase;} .ds-manifest a:hover{background:var(--ink);color:var(--stock);} .ds-manifest a:focus-visible{outline:3px solid var(--ink);outline-offset:-5px;} .ds-manifest span{font-size:1.6rem;font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:0;line-height:1;}"
+    },
+    {
+      "name": "Line Items with Lead Entry",
+      "kind": "custom",
+      "refersTo": "entry-lead",
+      "description": "Entries divided by dashed tear lines. The first experience entry prints reversed (rank by inversion). Titles stay mixed case.",
+      "html": "<div class=\"ds-paper\"><article class=\"ds-entry ds-entry-lead\"><div class=\"ds-entry-heading\"><div><h3>Facilities Assistant</h3><p class=\"ds-sub\">Loyola Marymount University · Los Angeles, CA</p></div><p class=\"ds-dates\">Fall 2025</p></div><p class=\"ds-desc\">On-campus position held alongside a full course load.</p></article><article class=\"ds-entry\"><div class=\"ds-entry-heading\"><div><h3>Operations Manager</h3><p class=\"ds-sub\">Tjwan Bo Bakery · Surabaya, Indonesia</p></div><p class=\"ds-dates\">2022 – 2023</p></div><p class=\"ds-desc\">Oversaw daily operations and led a staff of about 50.</p><ul class=\"ds-used\"><li>Project Management</li><li>Small Team Leadership</li></ul></article></div>",
+      "css": ":host{--kraft:#b48656;--kraft-deep:#9c7144;--stock:#f7f2e7;--stock-shade:#ece3d1;--ink:#1f1a15;--ink-soft:#5b4a39;--ink-faint:#6a5642;--rule:#8a6a48;--stamp:#c4302b;--stamp-deep:#9a2420;} .ds-paper{padding:1.5rem;background:var(--stock);color:var(--ink);font-family:'Sofia Sans',ui-sans-serif,system-ui,sans-serif;font-size:1.0625rem;line-height:1.6;} .ds-entry{padding:1.35rem 0;} .ds-entry+.ds-entry{border-top:2px dashed var(--rule);} .ds-entry-lead{margin:0 0 .25rem;padding:1.25rem 1.35rem 1.35rem;border-radius:4px;background:var(--ink);color:var(--stock);} .ds-entry-lead+.ds-entry{border-top:0;} .ds-entry-heading{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem 1.5rem;} .ds-entry h3{margin:0;font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:.01em;line-height:1.1;} .ds-sub{margin:.35rem 0 0;color:var(--ink-soft);font-weight:650;line-height:1.4;} .ds-dates{margin:0;color:var(--ink-soft);font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:1.05rem;font-weight:750;letter-spacing:.04em;text-transform:uppercase;font-variant-numeric:tabular-nums;white-space:nowrap;} .ds-desc{max-width:60ch;margin:.7rem 0 0;line-height:1.65;} .ds-entry-lead .ds-sub,.ds-entry-lead .ds-dates,.ds-entry-lead .ds-desc{color:var(--stock-shade);} .ds-used{display:flex;flex-wrap:wrap;margin:.75rem 0 0;padding:0;list-style:none;color:var(--ink-soft);font-family:'Sofia Sans Condensed','Arial Narrow',ui-sans-serif,system-ui,sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.02em;} .ds-used li:not(:last-child)::after{content:'/';padding:0 .55em;opacity:.7;}"
+    },
+    {
+      "name": "Skills Checklist",
+      "kind": "custom",
+      "refersTo": "slip",
+      "description": "Skills as a contents checklist with CSS-drawn ticked boxes and dashed column rules. Never chips.",
+      "html": "<ul class=\"ds-check\"><li>SQL</li><li>Python</li><li>Microsoft Access</li><li>Event Planning</li><li>Communication</li><li>Public Speaking</li></ul>",
+      "css": ":host{--kraft:#b48656;--kraft-deep:#9c7144;--stock:#f7f2e7;--stock-shade:#ece3d1;--ink:#1f1a15;--ink-soft:#5b4a39;--ink-faint:#6a5642;--rule:#8a6a48;--stamp:#c4302b;--stamp-deep:#9a2420;} .ds-check{columns:3 9.5rem;column-gap:2rem;column-rule:2px dashed var(--rule);margin:0;padding:1.5rem;list-style:none;background:var(--stock);color:var(--ink);font-family:'Sofia Sans',ui-sans-serif,system-ui,sans-serif;} .ds-check li{display:flex;align-items:flex-start;gap:.7rem;padding:.45rem 0;break-inside:avoid;font-weight:600;line-height:1.3;} .ds-check li::before{content:'';flex:0 0 auto;width:.95rem;height:.95rem;box-sizing:border-box;margin-top:.18em;border:2px solid var(--ink);border-radius:2px;background:linear-gradient(45deg,transparent 44%,var(--ink) 44% 56%,transparent 56%),linear-gradient(-45deg,transparent 44%,var(--ink) 44% 56%,transparent 56%);}"
+    },
+    {
+      "name": "Dispatch Sticker",
+      "kind": "custom",
+      "refersTo": "slip",
+      "description": "Status notice shown only when the page falls back from live data.",
+      "html": "<div class=\"ds-ground\"><p class=\"ds-sticker\" role=\"status\">This is the cached profile because live profile data is temporarily unavailable.</p></div>",
+      "css": ":host{--kraft:#b48656;--kraft-deep:#9c7144;--stock:#f7f2e7;--stock-shade:#ece3d1;--ink:#1f1a15;--ink-soft:#5b4a39;--ink-faint:#6a5642;--rule:#8a6a48;--stamp:#c4302b;--stamp-deep:#9a2420;} .ds-ground{padding:24px;background:var(--kraft);} .ds-sticker{margin:0;padding:.85rem 1.1rem;border:2px dashed var(--ink);border-radius:6px;background:var(--stock);color:var(--ink);font-family:'Sofia Sans',ui-sans-serif,system-ui,sans-serif;font-weight:600;line-height:1.5;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Dispatch Box",
+    "overview": "The career ships as an operations document. Corrugated kraft board owns the whole ground, and everything readable sits on white label stock laid on top of it: a shipping label up front (who, what, how to reach), then packing slips that list what was delivered, line item by line item. Near-black ink does all the structural work with 2px rules, reversed bars and dashed tear lines. One rubber-stamp red is held back for the contact action, so the only coloured mark on the page is the one thing the reader should do.\n\nThe density is that of a well-kept manifest: tight condensed caps for labels and headings, quantities set in tabular figures, and generous plain-sans prose capped at 60ch. Hierarchy comes from inversion and weight, not from colour or size jumps. The world rejects the white-card-on-gray resume template with pill chips. Skills are typed text or a checklist, never chips.\n\nThis system covers the public profile only (`body.public`). The admin pages keep their older teal-on-gray look on purpose (`:root`, global `h1`/`h2`, `.admin*`). That look is out of scope here and does not belong to this world.",
+    "keyCharacteristics": [
+      "Kraft board ground with a subtle fibre-noise texture, visible as margin around every slip.",
+      "Label-stock slips with 2px ink borders and 6px corners.",
+      "Ink-reversed header bars on every slip, and ink-reversed lead entries for ranking.",
+      "Dashed tear lines in rule-brown between line items.",
+      "A perforated manifest stub with half-round notches along the foot of the shipping label.",
+      "Stamp red only on the contact action.",
+      "One condensed caps face for labels, one humanist sans for prose. Both are self-hosted under the OFL."
+    ],
+    "rules": [
+      {
+        "name": "The Single Stamp Rule",
+        "body": "Stamp red marks the contact action and nothing else: no red headings, no red emphasis, no red icons. If a second element wants red, it has to be a way to reach Chris.",
+        "section": "colors"
+      },
+      {
+        "name": "The Kraft Owns the Ground Rule",
+        "body": "The page background is always kraft board. Content never floats on plain white or gray. It sits on label stock laid on the board, with kraft visible around it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Long-Title Rule",
+        "body": "Entry titles (h3) stay mixed case, never caps. Database titles can run long (for example \"PERMIAS SMC (Indonesian Students Organization at Santa Monica College)\"), and caps would make them unreadable. Uppercase is for short, controlled labels: the name, slip heads, manifest cells, dates and stamps.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Quantity Rule",
+        "body": "Any count or date is set with `font-variant-numeric: tabular-nums`, so the manifest reads like a ledger.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper-Thickness Rule",
+        "body": "Only whole slips cast shadows, and every slip casts the same shadow. Inner elements show rank by inversion, not by lift.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Tear-Off Stub Rule",
+        "body": "The contents manifest is a perforated tear-off stub. A repeating row of punched holes (kraft discs ringed in ink, 18px pitch) runs along its top edge. Half-round notches at both ends cut into the label's side borders, filled with kraft so they read as cut-outs. The perforated stub is the system's one corner device. It is not a decoration to repeat on every slip.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** keep kraft board as the page ground, and put every block of content on a label-stock slip with a 2px ink border, 6px corners and the label-stock shadow.",
+      "**Do** reserve stamp red for contact links, with stamp-deep only as their pressed state.",
+      "**Do** rank by inversion. The lead experience entry prints reversed in ink, and nothing else is promoted by colour or lift.",
+      "**Do** set h3 entry titles in mixed case. Keep uppercase for short, controlled labels.",
+      "**Do** set every count and date in tabular figures.",
+      "**Do** separate line items with 2px dashed tear lines in rule-brown.",
+      "**Do** draw small marks (chevrons, ticks, perforations) in CSS from ink or kraft, and keep them on-world.",
+      "**Do** keep the stamp press within the reduced-motion guard. The motion is 1px and a 0.98 scale, nothing larger."
+    ],
+    "donts": [
+      "**Don't** use stamp red for headings, emphasis, borders, native control accents or decoration.",
+      "**Don't** render skills or tags as pill chips or coloured badges. Use typed \"/\"-separated text or the checklist.",
+      "**Don't** set long database titles in caps.",
+      "**Don't** put content on plain white or gray, or bring the admin teal palette into the public page.",
+      "**Don't** add lift or shadows to inner elements. Only whole slips cast the label-stock shadow.",
+      "**Don't** repeat the perforated stub and notches on every slip. The tear-off stub belongs to the shipping label's manifest."
+    ]
+  }
+}
