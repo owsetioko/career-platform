@@ -60,7 +60,7 @@
                 {% endif %}
                 {% if experience.skills %}
                   <ul class="tag-list" aria-label="Skills used">
-                    {% for skill in experience.skills|sort(attribute="name") %}
+                    {% for skill in experience.skills %}
                       <li>{{ skill.name }}</li>
                     {% endfor %}
                   </ul>
@@ -104,7 +104,7 @@
                 {% endif %}
                 {% if project.skills or project.tags %}
                   <ul class="tag-list">
-                    {% for skill in project.skills|sort(attribute="name") %}
+                    {% for skill in project.skills %}
                       <li>{{ skill.name }}</li>
                     {% endfor %}
                     {% for tag in project.tags|sort(attribute="name") %}

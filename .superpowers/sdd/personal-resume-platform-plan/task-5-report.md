@@ -24,7 +24,8 @@ bundled database-outage fallbacks remain in place.
   errors with HTTP 422 and are not saved.
 - Public serialization now orders experience, skills, projects, and education
   by their display-order values and omits hidden records, including hidden
-  skills attached to experiences and projects.
+  skills attached to experiences and projects. Nested experience/project skills
+  also follow each skill's display order.
 - Added backward-compatible SQLite column additions for existing experience,
   skill, project, and education tables. Existing rows receive display order
   zero and visible status by default.
@@ -44,6 +45,15 @@ production changes:
 - A configuration regression test first returned HTTP 200 for a malformed
   Argon2id hash instead of the required HTTP 503; hash-format validation fixed
   that fail-open configuration case.
+- Review follow-up first failed the new nested-skill ordering regression test:
+  the experience section rendered “Alpha Skill” before “Zebra Skill” even
+  though display order was 2 and 1 respectively. The project section was
+  checked in the same focused test, including omission of hidden nested skills.
+  Association-edit regression coverage verifies skill replacement on both
+  experience and project edits and project tag replacement persistence.
+- Minimal fix: public serialization sorts nested experience/project skills by
+  `(display_order, id)` before excluding hidden skills, and the Jinja template
+  preserves that order instead of sorting these nested lists alphabetically.
 
 ## Final verification
 
@@ -55,6 +65,16 @@ production changes:
   — **47 passed**.
 - `python -m compileall -q app tests` — passed.
 - `git diff --check` — passed.
+- Review-fix focused command:
+  `python -m pytest --basetemp=data/task5-review-focused-final tests/test_admin.py -q --tb=short`
+  — **26 passed**.
+- Review-fix full command:
+  `python -m pytest --basetemp=data/task5-review-full-final -q --tb=short`
+  — **49 passed**.
+- Review-fix TDD pair:
+  `python -m pytest --basetemp=data/task5-review-red-5 tests/test_admin.py::test_public_nested_skills_follow_display_order_and_omit_hidden_skills tests/test_admin.py::test_editing_experience_and_project_persists_skill_and_tag_associations -q --tb=short`
+  — **1 expected failure for nested skill ordering; 1 association persistence test passed** before implementation.
+  After the fix, the same two tests passed (**2 passed**).
 - Tests cover unconfigured service behavior with public-page availability,
   missing/invalid credentials, successful and rejected login, unauthenticated
   page/write access, tampered signed cookies, CSRF rejection, secure-cookie

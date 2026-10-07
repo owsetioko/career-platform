@@ -71,7 +71,10 @@ def _serialize_profile(profile: Profile) -> dict:
                 "end_date": date_value(experience.end_date),
                 "skills": [
                     {"name": skill.name}
-                    for skill in experience.skills
+                    for skill in sorted(
+                        experience.skills,
+                        key=lambda skill: (skill.display_order, skill.id),
+                    )
                     if skill.is_visible
                 ],
             }
@@ -88,7 +91,10 @@ def _serialize_profile(profile: Profile) -> dict:
                 "url": project.url,
                 "skills": [
                     {"name": skill.name}
-                    for skill in project.skills
+                    for skill in sorted(
+                        project.skills,
+                        key=lambda skill: (skill.display_order, skill.id),
+                    )
                     if skill.is_visible
                 ],
                 "tags": [{"name": tag.name} for tag in project.tags],

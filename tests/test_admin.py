@@ -14,6 +14,7 @@ from app.database import (
     Experience,
     Profile,
     Project,
+    ProjectTag,
     Skill,
     create_database_engine,
     initialize_database,
@@ -478,6 +479,119 @@ def test_public_page_honors_visibility_and_order_for_all_content(
         assert hidden not in response.text
     assert "Second Project" in response.text
     assert "Visible Education" in response.text
+
+
+def test_public_nested_skills_follow_display_order_and_omit_hidden_skills(
+    tmp_path, monkeypatch
+) -> None:
+    client, database_url = _client(tmp_path, monkeypatch)
+    engine = create_database_engine(database_url)
+    with Session(engine) as session:
+        profile = session.scalar(select(Profile).where(Profile.slug == "owner"))
+        assert profile is not None
+        first = Skill(name="Zebra Skill", display_order=1, is_visible=True)
+        second = Skill(name="Alpha Skill", display_order=2, is_visible=True)
+        hidden = Skill(name="Hidden Nested Skill", display_order=0, is_visible=False)
+        profile.skills = [first, second, hidden]
+        session.flush()
+        session.add_all(
+            [
+                Experience(
+                    profile_id=profile.id,
+                    title="Role with ordered skills",
+                    company="Example Co",
+                    skills=[first, second, hidden],
+                ),
+                Project(
+                    profile_id=profile.id,
+                    name="Project with ordered skills",
+                    skills=[first, second, hidden],
+                ),
+            ]
+        )
+        session.commit()
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    experience_section = response.text.split('id="experience"', 1)[1].split(
+        'id="skills"', 1
+    )[0]
+    project_section = response.text.split('id="projects"', 1)[1].split(
+        'id="education"', 1
+    )[0]
+    for section in (experience_section, project_section):
+        assert section.index("Zebra Skill") < section.index("Alpha Skill")
+        assert "Hidden Nested Skill" not in section
+
+
+def test_editing_experience_and_project_persists_skill_and_tag_associations(
+    tmp_path, monkeypatch
+) -> None:
+    client, database_url = _client(tmp_path, monkeypatch)
+    engine = create_database_engine(database_url)
+    with Session(engine) as session:
+        profile = session.scalar(select(Profile).where(Profile.slug == "owner"))
+        assert profile is not None
+        original_skill = Skill(profile_id=profile.id, name="Original")
+        replacement_skill = Skill(profile_id=profile.id, name="Replacement")
+        session.add_all([original_skill, replacement_skill])
+        session.flush()
+        experience = Experience(
+            profile_id=profile.id,
+            title="Analyst",
+            company="Example Co",
+            skills=[original_skill],
+        )
+        project = Project(
+            profile_id=profile.id,
+            name="Portfolio",
+            skills=[original_skill],
+            tags=[ProjectTag(name="Original tag")],
+        )
+        session.add_all([experience, project])
+        session.commit()
+        experience_id = experience.id
+        project_id = project.id
+
+    _login(client)
+    experience_token = _csrf_token(
+        client.get(f"/admin/experiences/{experience_id}/edit")
+    )
+    experience_update = client.post(
+        f"/admin/experiences/{experience_id}/edit",
+        data={
+            "csrf_token": experience_token,
+            "title": "Analyst",
+            "company": "Example Co",
+            "skill_names": "Replacement",
+            "display_order": "0",
+            "is_visible": "on",
+        },
+    )
+    project_token = _csrf_token(client.get(f"/admin/projects/{project_id}/edit"))
+    project_update = client.post(
+        f"/admin/projects/{project_id}/edit",
+        data={
+            "csrf_token": project_token,
+            "name": "Portfolio",
+            "skill_names": "Replacement",
+            "tag_names": "Research, Dashboard",
+            "display_order": "0",
+            "is_visible": "on",
+        },
+    )
+
+    assert experience_update.status_code == 303
+    assert project_update.status_code == 303
+    with Session(engine) as session:
+        saved_experience = session.get(Experience, experience_id)
+        saved_project = session.get(Project, project_id)
+        assert saved_experience is not None
+        assert saved_project is not None
+        assert [skill.name for skill in saved_experience.skills] == ["Replacement"]
+        assert [skill.name for skill in saved_project.skills] == ["Replacement"]
+        assert {tag.name for tag in saved_project.tags} == {"Research", "Dashboard"}
 
 
 def test_project_url_and_required_fields_are_rejected_with_field_errors(
