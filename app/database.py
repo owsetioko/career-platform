@@ -209,6 +209,14 @@ class Education(Base):
     profile: Mapped[Profile] = relationship(back_populates="education")
 
 
+def normalize_database_url(database_url: str) -> str:
+    url = make_url(database_url)
+    if url.drivername in ("postgres", "postgresql"):
+        url = url.set(drivername="postgresql+psycopg")
+        return url.render_as_string(hide_password=False)
+    return database_url
+
+
 def get_database_url() -> str:
     configured_url = os.getenv("DATABASE_URL")
     if configured_url:
@@ -220,14 +228,18 @@ def get_database_url() -> str:
 
 
 def create_database_engine(database_url: str | None = None) -> Engine:
-    url = make_url(database_url or get_database_url())
+    url = make_url(normalize_database_url(database_url or get_database_url()))
     if (
         url.drivername.startswith("sqlite")
         and url.database not in (None, "", ":memory:")
     ):
         Path(url.database).expanduser().parent.mkdir(parents=True, exist_ok=True)
 
-    engine = create_engine(url)
+    if url.drivername.startswith("sqlite"):
+        engine = create_engine(url)
+    else:
+        # Railway's proxy closes idle connections; check before reuse.
+        engine = create_engine(url, pool_pre_ping=True)
     if url.drivername.startswith("sqlite"):
 
         @event.listens_for(engine, "connect")
