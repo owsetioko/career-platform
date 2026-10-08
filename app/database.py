@@ -275,7 +275,7 @@ def _add_missing_profile_contact_columns(engine: Engine) -> None:
 def _add_missing_content_display_columns(engine: Engine) -> None:
     display_columns = {
         "display_order": "INTEGER NOT NULL DEFAULT 0",
-        "is_visible": "BOOLEAN NOT NULL DEFAULT 1",
+        "is_visible": "BOOLEAN NOT NULL DEFAULT TRUE",
     }
     for table in ("experiences", "skills", "projects", "education"):
         if not inspect(engine).has_table(table):
