@@ -1,266 +1,247 @@
 ---
 name: Chris Owen Setioko, Career Platform
-description: A public resume shipped as an operations document, a labelled carton with a packing slip of what was delivered.
+description: A classic resume typeset to book standard on screen; the page itself is the document.
 colors:
-  kraft: "#b48656"
-  kraft-deep: "#9c7144"
-  stock: "#f7f2e7"
-  stock-shade: "#ece3d1"
-  ink: "#1f1a15"
-  ink-soft: "#5b4a39"
-  ink-faint: "#6a5642"
-  rule: "#8a6a48"
-  stamp: "#c4302b"
-  stamp-deep: "#9a2420"
+  paper: "#ffffff"
+  ink: "#16202b"
+  slate: "#4a5563"
+  hairline: "#d9dde3"
+  separator: "#8a93a0"
+  navy: "#1f3a68"
+  navy-deep: "#152a4d"
+  navy-wash: "#eef2f8"
+  navy-line: "#c9d3e3"
 typography:
   display:
-    fontFamily: "Sofia Sans Condensed, Arial Narrow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(3rem, 10vw, 6rem)"
-    fontWeight: 850
-    lineHeight: 0.88
-    letterSpacing: "-0.01em"
+    fontFamily: "Source Serif 4, Georgia, Times New Roman, serif"
+    fontSize: "clamp(2.5rem, 6.5vw, 3.75rem)"
+    fontWeight: 600
+    lineHeight: 1.05
+    letterSpacing: "-0.015em"
   headline:
-    fontFamily: "Sofia Sans Condensed, Arial Narrow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(1.6rem, 3.6vw, 2.2rem)"
-    fontWeight: 850
-    lineHeight: 1
-    letterSpacing: "0.04em"
+    fontFamily: "Source Serif 4, Georgia, Times New Roman, serif"
+    fontSize: "1.3rem"
+    fontWeight: 600
+    lineHeight: 1.25
+    letterSpacing: "0"
   title:
-    fontFamily: "Sofia Sans Condensed, Arial Narrow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(1.35rem, 2.6vw, 1.6rem)"
-    fontWeight: 800
-    lineHeight: 1.1
-    letterSpacing: "0.01em"
+    fontFamily: "Source Serif 4, Georgia, Times New Roman, serif"
+    fontSize: "1.2rem"
+    fontWeight: 600
+    lineHeight: 1.3
   lead:
-    fontFamily: "Sofia Sans, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "clamp(1.15rem, 2.4vw, 1.4rem)"
-    fontWeight: 650
-    lineHeight: 1.35
+    fontFamily: "Source Serif 4, Georgia, Times New Roman, serif"
+    fontSize: "clamp(1.125rem, 2vw, 1.25rem)"
+    fontWeight: 400
+    lineHeight: 1.6
+    fontFeature: "\"onum\" 1, \"pnum\" 1"
+  subhead:
+    fontFamily: "Source Sans 3, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 500
+    lineHeight: 1.4
   body:
-    fontFamily: "Sofia Sans, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Source Sans 3, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.0625rem"
     fontWeight: 400
     lineHeight: 1.6
   label:
-    fontFamily: "Sofia Sans Condensed, Arial Narrow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.05rem"
-    fontWeight: 750
-    lineHeight: 1.2
-    letterSpacing: "0.06em"
-  stamp:
-    fontFamily: "Sofia Sans Condensed, Arial Narrow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "2rem"
-    fontWeight: 850
+    fontFamily: "Source Sans 3, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 600
     lineHeight: 1
-    letterSpacing: "0.08em"
-  count:
-    fontFamily: "Sofia Sans Condensed, Arial Narrow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.6rem"
-    fontWeight: 850
-    lineHeight: 1
-    letterSpacing: "0"
-    fontFeature: "tnum"
+  meta:
+    fontFamily: "Source Sans 3, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    fontFeature: "\"tnum\" 1, \"lnum\" 1"
 rounded:
-  tick: "2px"
-  slip-head: "3px"
-  inset: "4px"
-  stamp: "5px"
-  slip: "6px"
+  focus: "2px"
+  sm: "4px"
 spacing:
-  gap: "clamp(1rem, 2.5vw, 1.5rem)"
-  pad: "clamp(1.15rem, 4vw, 2.5rem)"
-  entry: "1.35rem"
-  list: "0.75rem"
+  rail: "11rem"
+  column-gap: "clamp(1.5rem, 4vw, 3rem)"
+  section: "clamp(2rem, 4.5vw, 3rem)"
+  entry: "2rem"
+  measure-lead: "62ch"
+  measure-body: "65ch"
+  page-max: "60rem"
 components:
-  stamp:
-    backgroundColor: "transparent"
-    textColor: "{colors.stamp}"
-    typography: "{typography.stamp}"
-    rounded: "{rounded.stamp}"
-    padding: "0.55rem 1.3rem 0.45rem"
-    height: "3.6rem"
-  stamp-hover:
-    backgroundColor: "{colors.stamp}"
-    textColor: "{colors.stock}"
-  stamp-active:
-    backgroundColor: "{colors.stamp-deep}"
-    textColor: "{colors.stock}"
-  slip:
-    backgroundColor: "{colors.stock}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.slip}"
-    padding: "0 clamp(1.15rem, 4vw, 2.5rem) clamp(1.15rem, 4vw, 2.5rem)"
-  slip-head:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.stock}"
-    typography: "{typography.headline}"
-    rounded: "{rounded.slip-head}"
-    padding: "0.8rem clamp(1.15rem, 4vw, 2.5rem) 0.7rem"
-  manifest-cell:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+  button-primary:
+    backgroundColor: "{colors.navy}"
+    textColor: "{colors.paper}"
     typography: "{typography.label}"
-    padding: "0.85rem 1rem"
-    height: "3.25rem"
-  manifest-cell-hover:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.stock}"
-  entry-lead:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.stock}"
-    rounded: "{rounded.inset}"
-    padding: "1.25rem 1.35rem 1.35rem"
+    rounded: "{rounded.sm}"
+    padding: "0.5rem 1.05rem"
+    height: "2.75rem"
+  button-primary-hover:
+    backgroundColor: "{colors.navy-deep}"
+    textColor: "{colors.paper}"
+  button-outline:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.navy}"
+    typography: "{typography.label}"
+    rounded: "{rounded.sm}"
+    padding: "0.5rem 1.05rem"
+    height: "2.75rem"
+  button-outline-hover:
+    backgroundColor: "{colors.navy-wash}"
+    textColor: "{colors.navy}"
+  nav-link:
+    textColor: "{colors.slate}"
+    typography: "{typography.label}"
+    padding: "0.35rem 0"
+  nav-link-hover:
+    textColor: "{colors.ink}"
+  notice:
+    backgroundColor: "{colors.navy-wash}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
+    padding: "0.8rem 1rem"
 ---
 
 # Design System: Chris Owen Setioko, Career Platform
 
 ## Overview
 
-**Creative North Star: "Dispatch Box"**
+**Creative North Star: "The Typeset Resume"**
 
-The career ships as an operations document. Corrugated kraft board owns the whole ground, and everything readable sits on white label stock laid on top of it: a shipping label up front (who, what, how to reach), then packing slips that list what was delivered, line item by line item. Near-black ink does all the structural work with 2px rules, reversed bars and dashed tear lines. One rubber-stamp red is held back for the contact action, so the only coloured mark on the page is the one thing the reader should do.
+The public page is a classic resume set to book standard on screen. There is no theme, no prop and no card: the white page is the document, and everything on it is type, hairline rules and one restrained navy. Hierarchy comes from a serif/sans pairing and from a hanging-heading grid in which section names sit in a left margin rail and line items run down a steady main column.
 
-The density is that of a well-kept manifest: tight condensed caps for labels and headings, quantities set in tabular figures, and generous plain-sans prose capped at 60ch. Hierarchy comes from inversion and weight, not from colour or size jumps. The world rejects the white-card-on-gray resume template with pill chips. Skills are typed text or a checklist, never chips.
+Density is that of a well-made printed CV: generous section spacing, measured line lengths (62ch lead, 65ch body), dated entries that align on a baseline with their titles. Color does almost no work; the single accent is reserved for things a reader can act on. The same structure carries to paper through a dedicated print sheet.
 
-This system covers the public profile only (`body.public`). The admin pages keep their older teal-on-gray look on purpose (`:root`, global `h1`/`h2`, `.admin*`). That look is out of scope here and does not belong to this world.
+This world replaces the earlier "Dispatch Box" carton theme. It rejects both the costume resume and the white-card-on-gray template with pill chips.
+
+Scope: this system governs the public profile (everything under the public page scope). The admin pages deliberately keep their older teal-on-gray look (the root defaults, global h1/h2, and the admin rules) and are out of scope; do not migrate them to this system or this system to them without an explicit decision.
 
 **Key Characteristics:**
-- Kraft board ground with a subtle fibre-noise texture, visible as margin around every slip.
-- Label-stock slips with 2px ink borders and 6px corners.
-- Ink-reversed header bars on every slip, and ink-reversed lead entries for ranking.
-- Dashed tear lines in rule-brown between line items.
-- A perforated manifest stub with half-round notches along the foot of the shipping label.
-- Stamp red only on the contact action.
-- One condensed caps face for labels, one humanist sans for prose. Both are self-hosted under the OFL.
+- Pure white ground, near-black ink, slate secondary, pale hairline rules.
+- One Oxford navy, reserved for links, the contact actions, focus and selection.
+- Source Serif 4 (optical sizes) for name, section heads, entry titles and lead prose; Source Sans 3 for body, meta and dates.
+- Hanging section heads in an 11rem margin rail, sticky while their section scrolls.
+- Flat: no shadows, no cards; structure from rules and whitespace.
+- A print sheet that renders the same resume on paper.
 
 ## Colors
 
-A single-hue kraft-and-ink program (every neutral sits near hue 66 in OKLCH) with one saturated red held in reserve.
+A near-monochrome ink-on-white palette with a single cool navy accent used sparingly.
 
 ### Primary
-- **Stamp Red** (`stamp`): rubber-stamp ink. Used only on the contact action: the stamp links in the shipping label and in the closing Contact slip, their focus outline, and their hover fill. **Stamp Deep** (`stamp-deep`) is its pressed state (`:active` background and border) and nothing else.
+- **Oxford Navy** (navy): links, the primary contact button fill, outline-button borders and text, the focus ring, text selection, and form accent color. It is the only chromatic color on the page.
+- **Deep Oxford** (navy-deep): hover state of the primary contact button (fill and border).
+- **Navy Wash** (navy-wash): hover fill of outlined contact buttons and the fallback notice background.
+- **Navy Line** (navy-line): the resting underline color of linked entry titles and the fallback notice border.
 
 ### Neutral
-- **Kraft Board** (`kraft`): the page ground behind every slip. It also fills the manifest perforations and notches so they read as holes punched through to the board. It matches the browser `theme-color`.
-- **Kraft Deep** (`kraft-deep`): the scrollbar track. This is the board in shadow.
-- **Label Stock** (`stock`): the surface of every slip, and the text colour on ink-reversed bars.
-- **Stock Shade** (`stock-shade`): secondary text inside reversed ink areas (subtitle, dates, description and skills on the lead experience entry).
-- **Carton Ink** (`ink`): text, 2px borders, slip-head bars, the reversed lead entry, manifest dividers, focus rings and the selection background.
-- **Faded Ink** (`ink-soft`): secondary text on stock, such as entry subtitles, dates and the skills-used line.
-- **Pencil Ink** (`ink-faint`): empty-state text only, set in italic.
-- **Tear-Line Brown** (`rule`): dashed tear lines between entries, the dashed summary divider, the skills column rule, and resting underlines on project links. It is never used for text.
+- **Paper White** (paper): the page ground and the text color on navy fills.
+- **Ink** (ink): name, section heads, entry titles, subtitles and body text.
+- **Slate** (slate): headline under the name, locations, dates, skills-used runs, jump-nav links at rest, empty states and the footer.
+- **Hairline** (hairline): the 1px rules above every section and the footer.
+- **Separator Gray** (separator): the middle-dot separators between items in a skills-used run.
 
 ### Named Rules
-**The Single Stamp Rule.** Stamp red marks the contact action and nothing else: no red headings, no red emphasis, no red icons. If a second element wants red, it has to be a way to reach Chris.
+**The One Navy Rule.** Navy marks only what can be acted on (links, contact actions, focus, selection). Never use it for headings, decoration or backgrounds beyond the pale wash.
 
-**The Kraft Owns the Ground Rule.** The page background is always kraft board. Content never floats on plain white or gray. It sits on label stock laid on the board, with kraft visible around it.
+**The Paper Ground Rule.** The public page ground is pure white; there is no tinted page, no card surface and no gray backdrop.
 
 ## Typography
 
-**Display Font:** Sofia Sans Condensed (with Arial Narrow, then system sans)
-**Body Font:** Sofia Sans (with ui-sans-serif, system-ui)
+**Display Font:** Source Serif 4, variable with optical sizes (with Georgia, Times New Roman, serif)
+**Body Font:** Source Sans 3, variable roman and italic (with ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif)
 
-**Character:** The condensed face is shipping-label lettering: heavy, tall, uppercase, tracked out for small labels and tightened at display size. Its regular-width sibling carries the prose, so the two read as one family speaking in two registers.
+Both families are self-hosted woff2 under the SIL Open Font License (OFL text shipped with the fonts); the serif and sans roman files are preloaded.
+
+**Character:** A book serif with optical sizing gives the name and heads a typeset, editorial authority; a humanist sans keeps prose, meta and dates crisp and quiet beside it.
 
 ### Hierarchy
-- **Display** (850, `clamp(3rem, 10vw, 6rem)`, line-height 0.88, uppercase, balanced, max 14ch): the name on the shipping label. One per page.
-- **Headline** (850, `clamp(1.6rem, 3.6vw, 2.2rem)`, line-height 1, +0.04em, uppercase): slip titles, set in stock on the ink bar.
-- **Title** (800, `clamp(1.35rem, 2.6vw, 1.6rem)`, line-height 1.1, mixed case): entry titles such as job, project and institution.
-- **Lead** (Sofia Sans 650, `clamp(1.15rem, 2.4vw, 1.4rem)`, line-height 1.35, max 40ch): the headline under the name. The contact-slip sentence uses a lighter cousin (600, 1.15rem).
-- **Body** (Sofia Sans 400, 1.0625rem, line-height 1.6 to 1.65, max 60ch): summary and entry descriptions. Descriptions preserve the line breaks from the database.
-- **Label** (750, about 1.05rem, +0.04 to +0.06em, uppercase): manifest cells, entry dates and slip counts (700, 1rem, +0.08em). The skills-used line uses the same face at 700 in mixed case with "/" separators.
-- **Stamp** (850, 2rem, +0.08em, uppercase): contact stamp text only.
-- **Count** (850, 1.6rem, tabular figures): manifest quantities.
+- **Display** (serif 600, clamp(2.5rem, 6.5vw, 3.75rem), line-height 1.05, -0.015em, balanced wrap): the name only, sentence case.
+- **Subhead** (sans 500, 1.25rem, 1.4; 1.125rem under 48rem; slate, 44ch): the headline beneath the name.
+- **Lead** (serif 400, clamp(1.125rem, 2vw, 1.25rem), 1.6, oldstyle proportional figures, 62ch): the summary paragraph. The contact close uses the same serif at 1.125rem, 52ch.
+- **Headline** (serif 600, 1.3rem, 1.25): hanging section heads in the rail. Under 48rem they become 1.625rem, line-height 1.15, stacked above content.
+- **Title** (serif 600, 1.2rem, 1.3, balanced wrap): entry titles (role, project, institution).
+- **Body** (sans 400, 1.0625rem, 1.6, max 65ch): descriptions; line breaks in the source text are preserved. Entry subtitles use sans 600 at body size, line-height 1.45.
+- **Label** (sans 600, 0.9375rem for jump nav; 1rem in contact buttons): navigation and button text.
+- **Meta** (sans 400, 0.9375rem, tabular lining figures, slate): dates and skills-used runs. The footer is 0.875rem slate.
 
 ### Named Rules
-**The Long-Title Rule.** Entry titles (h3) stay mixed case, never caps. Database titles can run long (for example "PERMIAS SMC (Indonesian Students Organization at Santa Monica College)"), and caps would make them unreadable. Uppercase is for short, controlled labels: the name, slip heads, manifest cells, dates and stamps.
+**The Serif Is Structure Rule.** Serif carries the document's skeleton (name, section heads, entry titles, lead prose); sans carries everything read at speed. Do not swap roles.
 
-**The Tabular Quantity Rule.** Any count or date is set with `font-variant-numeric: tabular-nums`, so the manifest reads like a ledger.
+**The Tabular Dates Rule.** Date ranges always set in tabular lining figures and never wrap, so they align down the column.
 
 ## Layout
 
-A single centred column (`width: min(100%, 62rem)`) of slips stacked on the board, with `gap` between them. The body padding on kraft is `clamp(0.75rem, 4vw, 3.5rem)` vertically and `clamp(0.75rem, 4vw, 2rem)` horizontally, so the board always shows at the edges.
+The page is a single centered column, max 60rem, padded clamp(1.75rem, 6vw, 5rem) top, clamp(1rem, 5vw, 3rem) sides, clamp(2rem, 5vw, 4rem) bottom.
 
-The shipping label is a two-column grid: identity (name, lead and summary) on the left, and a contact block on the right, separated by a 2px ink rule. The full-width manifest runs below both. Slips use `pad` on the sides and bottom, and their ink head bar bleeds edge to edge through negative margins. Entries are separated by `entry` padding plus a dashed tear line. Skills flow into up to three columns (`columns: 3 9.5rem`) with a dashed column rule.
+The header is a two-column grid: identity (name and headline) on the left, contact actions aligned right; the summary and the jump nav span below. The jump nav is a wrapping row of links (gap 0.25rem by 1.75rem).
 
-At 48rem and below, the label stacks (identity, then contact, then manifest), and the contact rule moves from the left edge to the top. Stamps sit in a row. The manifest becomes a 2-column grid with ink dividers, and the final cell spans both columns. Entry headings stack their dates below the title, and skills drop to two columns.
+Every section is a two-column grid: an 11rem rail holding the section head, and the content column, separated by clamp(1.5rem, 4vw, 3rem). Sections have clamp(2rem, 4.5vw, 3rem) vertical padding and a 1px hairline rule on top. Entries within a section are spaced 2rem apart. An entry heading puts the title block on the left and the date range on the right, aligned on baseline.
 
-In print, the system collapses to a clean one-colour resume: white ground, no slips, shadows or manifest, hairline separators, and stamps reduced to plain text followed by their URL.
+Skills set as a plain multi-column list (3 columns, min 11rem, 2rem gap), not chips.
+
+**Narrow screens (max-width 48rem):** the header stacks (identity, contact, summary, nav) with contact actions left-aligned; sections collapse to one column; section heads become static and larger (1.625rem) with 1.25rem below; entry headings stack dates beneath titles; skills drop to 2 columns (min 9rem, 1.25rem gap); jump-nav column gap tightens to 1rem.
+
+**Print:** a dedicated print sheet sets the resume in black at 10.5pt with zero page padding, a 26pt name, a 7.5rem rail, static 12pt heads, 11.5pt titles, 12pt section padding with #999 rules, entries kept unbroken, and 9pt between entries. The jump nav, contact section and footer are hidden; header contact buttons print as plain text followed by their URL.
+
+### Named Rules
+**The Hanging Head Rule.** Section names live in the margin rail, never above the content on desktop. On desktop they are sticky (1.5rem from the top) and stay with their section while it scrolls; this is CSS only.
 
 ## Elevation & Depth
 
-Depth is physical and shallow: paper laid on cardboard. Each slip carries one stacked shadow, made of an inset top highlight, a 2px opaque lip that reads as the thickness of the stock, and a soft drop below. Nothing else on the page is lifted. Inversion (ink fill) is the main hierarchy device, not elevation.
-
-### Shadow Vocabulary
-- **Label stock on board** (`box-shadow: 0 1px 0 rgb(255 240 210 / 40%) inset, 0 2px 0 rgb(40 22 6 / 22%), 0 14px 26px -16px rgb(40 22 6 / 60%)`): every slip (the shipping label and each section). Never on inner elements.
-- **Stamp double rim** (`box-shadow: inset 0 0 0 2px stock, inset 0 0 0 3.5px stamp`): draws the inner rim of the rubber stamp. Swapped on hover so the rim shows in stock against the red fill.
+Fully flat. There are no shadows anywhere in the public system. Depth and grouping come from whitespace, the hairline rules between sections, and the type hierarchy. The only filled surfaces are the navy primary button and the pale navy wash of the fallback notice and outline-button hover.
 
 ### Named Rules
-**The Paper-Thickness Rule.** Only whole slips cast shadows, and every slip casts the same shadow. Inner elements show rank by inversion, not by lift.
+**The No-Card Rule.** Content never sits in raised or bordered boxes; a rule and whitespace separate sections, not containers.
 
 ## Shapes
 
-Gently squared corners throughout: slips at 6px, stamps at 5px, the reversed lead entry at 4px, slip-head bars at 3px on the top corners only, and checklist ticks at 2px. Borders are 2px ink for structure and 2px dashed rule-brown for tear lines. The stamp alone uses a 3px border.
-
-**The Tear-Off Stub Rule.** The contents manifest is a perforated tear-off stub. A repeating row of punched holes (kraft discs ringed in ink, 18px pitch) runs along its top edge. Half-round notches at both ends cut into the label's side borders, filled with kraft so they read as cut-outs. The perforated stub is the system's one corner device. It is not a decoration to repeat on every slip.
-
-Stamps sit at a fixed -2deg rotation, as if hand-pressed. No other element rotates.
+Square-shouldered and quiet. Buttons and the fallback notice use a small 4px radius; the focus outline carries a 2px radius. Lines are 1px throughout: section rules, button borders, link underlines and the drawn nav underline. The only icon is a small northeast arrow drawn as an inline SVG mask in currentColor (stroke 1.6, about 0.95em) trailing each contact button label.
 
 ## Components
 
-### Contact Stamp (signature, primary action)
-A hand-pressed rubber stamp. It is the only red object on the page.
-- **Shape:** 5px corners, 3px stamp-red border plus an inset double rim, rotated -2deg, minimum height 3.6rem.
-- **Default:** stamp-red text and rim on transparent (stock shows through), condensed 850 caps at 2rem, and a CSS-drawn chevron (a rotated bordered square) after the text.
-- **Hover:** fills with stamp red, text turns stock, and the rim inverts.
-- **Active (stamp press):** fill and border go to stamp-deep, plus `translateY(1px) scale(0.98)` and the same rotation.
-- **Focus:** a 3px outline in stamp red, offset 3px.
-- **Motion:** colour changes over 140ms and the transform over 160ms, both on `cubic-bezier(0.16, 1, 0.3, 1)`. Transitions run only under `prefers-reduced-motion: no-preference`. The state change itself still applies when reduced motion is on.
+### Buttons (contact actions)
+Plain, confident, and rare: they appear only in the header contact list and the contact close.
+- **Shape:** gently squared (4px radius), 1px navy border, min-height 2.75rem, padding 0.5rem 1.05rem, sans 600 at 1rem, trailing northeast arrow.
+- **Primary:** the first link in each contact list is the solid button: navy fill, white text. Its hover deepens fill and border to deep navy.
+- **Outline:** every other link in the list is white with navy text and border; hover fills with navy wash.
+- **Active:** nudges down 1px.
+- **Motion:** background, border and color ease over 160ms, transform over 120ms, on cubic-bezier(0.16, 1, 0.3, 1); only when reduced motion is not requested.
 
-### Slip (card / container)
-- **Corner Style:** 6px.
-- **Background:** label stock, with ink text.
-- **Border:** 2px solid ink.
-- **Shadow Strategy:** Label stock on board (see Elevation & Depth).
-- **Internal Padding:** `pad` on the sides and bottom. The top is taken by the slip head.
+### Navigation (jump links)
+- **Style:** slate sans 600 at 0.9375rem, no underline at rest, 0.35rem vertical padding.
+- **Hover:** text darkens to ink and a 1px underline draws in from the left (background-size transition, 260ms on the same ease-out curve; reduced-motion safe).
 
-### Slip Head
-A full-bleed ink bar across the top of each section slip, with 3px top corners. The slip title (Headline) sits on the left. On the right, a tabular uppercase count reads "N items" (or "1 item"). The Contact slip head has no count.
+### Links
+- **Body links:** navy with a 1px underline offset 0.2em.
+- **Linked entry titles:** ink text with a navy-line underline at rest; on hover the text and underline turn navy.
 
-### Manifest (navigation)
-A contents row of jump links along the foot of the shipping label, shaped as the Tear-Off Stub. There are five equal cells divided by 2px ink rules. Each cell holds an uppercase condensed label with a tabular count right-aligned at baseline. The Contact cell has no count. On hover, a cell inverts to ink with stock text. The focus outline is inset (-5px offset) so it stays inside the cell. On narrow screens it becomes a 2-column grid (see Layout).
+### Entry (signature)
+The line item that defines the page: serif title, sans 600 subtitle (organization in ink, location in slate after a comma), right-aligned tabular date range, a description paragraph at 65ch, and an optional skills-used run.
 
-### Line Item (entry)
-A title (Title, mixed case), a faded subtitle (company, with location at weight 500), dates right-aligned in the label style, a description capped at 60ch, and an optional skills-used line typed in condensed text with "/" separators. Entries are divided by 2px dashed tear lines. Project titles that link carry a rule-brown underline that darkens to ink on hover.
+### Skills-used run
+A quiet typed run in slate at 0.9375rem, items separated by a separator-gray middle dot with 0.5em spacing. It is text, not chips.
 
-### Lead Entry (rank by inversion)
-The first experience entry prints reversed: an ink panel with 4px corners, stock title, stock-shade secondary text and its own padding. The tear line after it is removed. This is the system's only ranking device. Print renders it as a normal entry.
+### Fallback notice
+A status line shown only when live data is unavailable: navy-wash background, navy-line 1px border, 4px radius, 0.8rem by 1rem padding, ink text at line-height 1.5.
 
-### Checklist (skills)
-Skills are a contents checklist, not chips. Each item has a 0.95rem ink-bordered square with a CSS-drawn X (two diagonal gradients), with text at weight 600, laid out in columns with dashed column rules.
-
-### Dispatch Sticker (status notice)
-The fallback notice sits on stock with a 2px dashed ink border, 6px corners and weight 600 text. It appears only when the page falls back from live data.
-
-### Empty State
-Pencil-ink italic body text inside the slip, such as "No projects listed yet." Every section shows one when its data is missing.
+### Focus and selection
+- **Focus-visible:** 2px solid navy outline, offset 3px, 2px radius, on every focusable element.
+- **Selection:** navy background with white text.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep kraft board as the page ground, and put every block of content on a label-stock slip with a 2px ink border, 6px corners and the label-stock shadow.
-- **Do** reserve stamp red for contact links, with stamp-deep only as their pressed state.
-- **Do** rank by inversion. The lead experience entry prints reversed in ink, and nothing else is promoted by colour or lift.
-- **Do** set h3 entry titles in mixed case. Keep uppercase for short, controlled labels.
-- **Do** set every count and date in tabular figures.
-- **Do** separate line items with 2px dashed tear lines in rule-brown.
-- **Do** draw small marks (chevrons, ticks, perforations) in CSS from ink or kraft, and keep them on-world.
-- **Do** keep the stamp press within the reduced-motion guard. The motion is 1px and a 0.98 scale, nothing larger.
+- **Do** keep the public ground pure white (paper) and set text in ink and slate only.
+- **Do** reserve navy for links, contact actions, focus and selection.
+- **Do** place section heads in the 11rem rail with a hairline rule above each section, sticky on desktop, static at 1.625rem under 48rem.
+- **Do** make the first link in each contact list the solid navy button and every other link outlined.
+- **Do** set dates in tabular lining figures and keep them on one line.
+- **Do** list skills as plain text (multi-column list or a middle-dot run).
+- **Do** keep motion to color, underline-draw and a 1px press, gated behind prefers-reduced-motion: no-preference.
+- **Do** keep the print sheet in step with any structural change to the page.
 
 ### Don't:
-- **Don't** use stamp red for headings, emphasis, borders, native control accents or decoration.
-- **Don't** render skills or tags as pill chips or coloured badges. Use typed "/"-separated text or the checklist.
-- **Don't** set long database titles in caps.
-- **Don't** put content on plain white or gray, or bring the admin teal palette into the public page.
-- **Don't** add lift or shadows to inner elements. Only whole slips cast the label-stock shadow.
-- **Don't** repeat the perforated stub and notches on every slip. The tear-off stub belongs to the shipping label's manifest.
+- **Don't** put content in cards, panels or shadowed boxes.
+- **Don't** render skills or tags as pills or chips.
+- **Don't** introduce a second accent color or tint the page ground.
+- **Don't** add small uppercase labels or kickers above headings; section names in the rail are the only labels.
+- **Don't** apply this system to the admin pages, or the admin teal-on-gray look to the public page.

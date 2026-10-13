@@ -17,12 +17,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ page_description }}">
-    <meta name="theme-color" content="#b48656">
+    <meta name="theme-color" content="#ffffff">
     <meta property="og:type" content="profile">
     <meta property="og:title" content="{{ page_title }}">
     <meta property="og:description" content="{{ page_description }}">
     <title>{{ page_title }}</title>
-    <link rel="preload" href="{{ url_for('static', path='/fonts/sofia-sans-condensed-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ url_for('static', path='/fonts/source-serif-4-latin-opsz-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ url_for('static', path='/fonts/source-sans-3-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
   </head>
   <body class="public">
@@ -33,56 +34,50 @@
         </p>
       {% endif %}
       <header class="profile-header">
-        <div class="label-identity">
+        <div class="identity">
           <h1>{{ profile.display_name }}</h1>
           {% if profile.headline %}
             <p class="headline">{{ profile.headline }}</p>
           {% endif %}
-          <p class="summary">{% if profile.summary %}{{ profile.summary }}{% else %}No professional summary provided.{% endif %}</p>
         </div>
         {% if has_contact %}
-          <div class="label-contact">
-            <p class="label-contact-lede">Get in touch</p>
-            <ul class="stamp-list">
-              {% if profile.email %}
-                <li><a class="stamp" href="mailto:{{ profile.email }}">Email</a></li>
-              {% endif %}
-              {% if profile.linkedin_url %}
-                <li><a class="stamp" href="{{ profile.linkedin_url }}">LinkedIn</a></li>
-              {% endif %}
-              {% if profile.github_url %}
-                <li><a class="stamp" href="{{ profile.github_url }}">GitHub</a></li>
-              {% endif %}
-              {% if profile.website %}
-                <li><a class="stamp" href="{{ profile.website }}">Website</a></li>
-              {% endif %}
-            </ul>
-          </div>
+          <ul class="header-contact" aria-label="Contact">
+            {% if profile.email %}
+              <li><a class="contact-action" href="mailto:{{ profile.email }}">Email</a></li>
+            {% endif %}
+            {% if profile.linkedin_url %}
+              <li><a class="contact-action" href="{{ profile.linkedin_url }}">LinkedIn</a></li>
+            {% endif %}
+            {% if profile.github_url %}
+              <li><a class="contact-action" href="{{ profile.github_url }}">GitHub</a></li>
+            {% endif %}
+            {% if profile.website %}
+              <li><a class="contact-action" href="{{ profile.website }}">Website</a></li>
+            {% endif %}
+          </ul>
         {% endif %}
-        <nav class="manifest" aria-label="Page contents">
+        <p class="summary">{% if profile.summary %}{{ profile.summary }}{% else %}No professional summary provided.{% endif %}</p>
+        <nav class="page-nav" aria-label="Page contents">
           <ul>
-            <li><a href="#experience">Experience <span class="manifest-count">{{ profile.experiences|length }}</span></a></li>
-            <li><a href="#skills">Skills <span class="manifest-count">{{ profile.skills|length }}</span></a></li>
-            <li><a href="#projects">Projects <span class="manifest-count">{{ profile.projects|length }}</span></a></li>
-            <li><a href="#education">Education <span class="manifest-count">{{ profile.education|length }}</span></a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#education">Education</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
       </header>
 
       <section class="profile-section" id="experience" aria-labelledby="experience-heading">
-        <div class="slip-head">
-          <h2 id="experience-heading">Experience</h2>
-          <p class="slip-count">{{ profile.experiences|length }} {{ "item" if profile.experiences|length == 1 else "items" }}</p>
-        </div>
-        {% if profile.experiences %}
-          <div class="entry-list">
+        <h2 id="experience-heading">Experience</h2>
+        <div class="section-body">
+          {% if profile.experiences %}
             {% for experience in profile.experiences %}
               <article class="entry">
                 <div class="entry-heading">
                   <div>
                     <h3>{{ experience.title }}</h3>
-                    <p class="entry-subtitle">{{ experience.company }}{% if experience.location %}<span class="entry-location"> · {{ experience.location }}</span>{% endif %}</p>
+                    <p class="entry-subtitle">{{ experience.company }}{% if experience.location %}<span class="entry-location">, {{ experience.location }}</span>{% endif %}</p>
                   </div>
                   {% if experience.start_date or experience.end_date %}
                     <p class="entry-dates">{{ date_range(experience.start_date, experience.end_date, "%b %Y") }}</p>
@@ -100,35 +95,31 @@
                 {% endif %}
               </article>
             {% endfor %}
-          </div>
-        {% else %}
-          <p class="empty-state">No experience listed yet.</p>
-        {% endif %}
+          {% else %}
+            <p class="empty-state">No experience listed yet.</p>
+          {% endif %}
+        </div>
       </section>
 
       <section class="profile-section" id="skills" aria-labelledby="skills-heading">
-        <div class="slip-head">
-          <h2 id="skills-heading">Skills</h2>
-          <p class="slip-count">{{ profile.skills|length }} {{ "item" if profile.skills|length == 1 else "items" }}</p>
+        <h2 id="skills-heading">Skills</h2>
+        <div class="section-body">
+          {% if profile.skills %}
+            <ul class="skill-list">
+              {% for skill in profile.skills %}
+                <li>{{ skill.name }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="empty-state">No skills listed yet.</p>
+          {% endif %}
         </div>
-        {% if profile.skills %}
-          <ul class="skill-list">
-            {% for skill in profile.skills %}
-              <li>{{ skill.name }}</li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="empty-state">No skills listed yet.</p>
-        {% endif %}
       </section>
 
       <section class="profile-section" id="projects" aria-labelledby="projects-heading">
-        <div class="slip-head">
-          <h2 id="projects-heading">Projects</h2>
-          <p class="slip-count">{{ profile.projects|length }} {{ "item" if profile.projects|length == 1 else "items" }}</p>
-        </div>
-        {% if profile.projects %}
-          <div class="entry-list">
+        <h2 id="projects-heading">Projects</h2>
+        <div class="section-body">
+          {% if profile.projects %}
             {% for project in profile.projects %}
               {% set project_href = safe_url(project.url) %}
               <article class="entry">
@@ -154,19 +145,16 @@
                 {% endif %}
               </article>
             {% endfor %}
-          </div>
-        {% else %}
-          <p class="empty-state">No projects listed yet.</p>
-        {% endif %}
+          {% else %}
+            <p class="empty-state">No projects listed yet.</p>
+          {% endif %}
+        </div>
       </section>
 
       <section class="profile-section" id="education" aria-labelledby="education-heading">
-        <div class="slip-head">
-          <h2 id="education-heading">Education</h2>
-          <p class="slip-count">{{ profile.education|length }} {{ "item" if profile.education|length == 1 else "items" }}</p>
-        </div>
-        {% if profile.education %}
-          <div class="entry-list">
+        <h2 id="education-heading">Education</h2>
+        <div class="section-body">
+          {% if profile.education %}
             {% for education in profile.education %}
               <article class="entry">
                 <div class="entry-heading">
@@ -187,38 +175,38 @@
                 {% endif %}
               </article>
             {% endfor %}
-          </div>
-        {% else %}
-          <p class="empty-state">No education listed yet.</p>
-        {% endif %}
+          {% else %}
+            <p class="empty-state">No education listed yet.</p>
+          {% endif %}
+        </div>
       </section>
 
       <section class="profile-section contact-section" id="contact" aria-labelledby="contact-heading">
-        <div class="slip-head">
-          <h2 id="contact-heading">Contact</h2>
+        <h2 id="contact-heading">Contact</h2>
+        <div class="section-body">
+          {% if has_contact %}
+            <p class="contact-lede">Thanks for reading. The best way to reach me is below.</p>
+            <ul class="contact-links">
+              {% if profile.email %}
+                <li><a href="mailto:{{ profile.email }}">Email</a></li>
+              {% endif %}
+              {% if profile.website %}
+                <li><a href="{{ profile.website }}">Website</a></li>
+              {% endif %}
+              {% if profile.linkedin_url %}
+                <li><a href="{{ profile.linkedin_url }}">LinkedIn</a></li>
+              {% endif %}
+              {% if profile.github_url %}
+                <li><a href="{{ profile.github_url }}">GitHub</a></li>
+              {% endif %}
+            </ul>
+          {% else %}
+            <p class="empty-state">No contact methods have been provided.</p>
+          {% endif %}
         </div>
-        {% if has_contact %}
-          <p class="contact-lede">Thanks for reading. The best way to reach me is below.</p>
-          <ul class="contact-links">
-            {% if profile.email %}
-              <li><a href="mailto:{{ profile.email }}">Email</a></li>
-            {% endif %}
-            {% if profile.website %}
-              <li><a href="{{ profile.website }}">Website</a></li>
-            {% endif %}
-            {% if profile.linkedin_url %}
-              <li><a href="{{ profile.linkedin_url }}">LinkedIn</a></li>
-            {% endif %}
-            {% if profile.github_url %}
-              <li><a href="{{ profile.github_url }}">GitHub</a></li>
-            {% endif %}
-          </ul>
-        {% else %}
-          <p class="empty-state">No contact methods have been provided.</p>
-        {% endif %}
       </section>
 
-      <footer class="slip-foot">
+      <footer class="page-foot">
         <p>Built with FastAPI, Jinja2 and SQLite.</p>
       </footer>
     </main>
