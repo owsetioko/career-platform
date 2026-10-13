@@ -13,6 +13,7 @@ from app.database import (
     create_database_engine,
     get_database_url,
     initialize_database,
+    normalize_database_url,
 )
 
 
@@ -300,3 +301,38 @@ def test_database_url_defaults_under_project_data_directory(monkeypatch) -> None
     monkeypatch.delenv("DATABASE_URL", raising=False)
 
     assert get_database_url().endswith("/data/resume.db")
+
+
+def test_railway_postgres_urls_use_psycopg_driver() -> None:
+    assert (
+        normalize_database_url("postgresql://user:pw@db.internal:5432/railway")
+        == "postgresql+psycopg://user:pw@db.internal:5432/railway"
+    )
+    assert (
+        normalize_database_url("postgres://user:pw@db.internal:5432/railway")
+        == "postgresql+psycopg://user:pw@db.internal:5432/railway"
+    )
+
+
+def test_normalization_keeps_encoded_password_characters() -> None:
+    assert (
+        normalize_database_url("postgresql://user:p%40ss%2Fword@host/railway")
+        == "postgresql+psycopg://user:p%40ss%2Fword@host/railway"
+    )
+
+
+def test_normalization_leaves_other_urls_alone() -> None:
+    for url in (
+        "sqlite:///:memory:",
+        "sqlite:////tmp/resume.db",
+        "postgresql+psycopg2://user:pw@host/railway",
+    ):
+        assert normalize_database_url(url) == url
+
+
+def test_engine_for_railway_url_uses_psycopg() -> None:
+    engine = create_database_engine("postgresql://user:pw@localhost:5432/railway")
+
+    assert engine.dialect.name == "postgresql"
+    assert engine.dialect.driver == "psycopg"
+    engine.dispose()

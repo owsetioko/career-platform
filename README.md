@@ -151,6 +151,43 @@ admin credentials.
   in `/admin`, saved the form, and left the content item visible. A hidden
   item is intentionally omitted from the public page.
 
+## Deploy on Railway
+
+Production runs on Railway: one web service built from this repository, plus
+a PostgreSQL service in the same project. `railway.json` holds the deploy
+settings:
+
+- Railpack installs dependencies from `uv.lock` and uses Python from `.python-version`.
+- Before each deploy goes live, `python -m app.database` creates any missing
+  tables and the starter `owner` row. It is safe to run on every deploy.
+- Uvicorn trusts Railway's proxy headers, so static URLs are built as `https://`.
+
+The web service needs these variables:
+
+| Variable | Value |
+| --- | --- |
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (reference to the Postgres service's private URL) |
+| `APP_TITLE` | `Personal Resume Platform` |
+
+`SESSION_SECRET`, `ADMIN_PASSWORD_HASH`, and `SESSION_COOKIE_SECURE=true` are
+needed only to turn on the owner admin (see "Configure the owner admin").
+
+To load resume content from a local SQLite file into an empty Railway
+database, put the Postgres service's public URL in `.env` as
+`RAILWAY_DATABASE_URL`, then run:
+
+    uv run python -m app.copy_database data/resume.db
+
+It keeps row IDs, resets ID sequences, and refuses to run if the target
+already holds resume content.
+
+The page snapshot in `data/public-profile.json` lives on the container's
+disk and is rebuilt after each deploy on the first successful page load.
+
+To run the Postgres integration tests, point `TEST_DATABASE_URL` at a local
+database (for example `postgresql://localhost/career_platform_test`). The
+tests refuse any host other than localhost because they drop tables.
+
 ## Future Azure Linux VM readiness (guidance only)
 
 These notes describe a possible later single-VM setup; they do not create Azure
