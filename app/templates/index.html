@@ -207,8 +207,9 @@
       </section>
 
       <footer class="page-foot">
-        <p>Built with FastAPI, Jinja2 and SQLite.</p>
+        <p>Built with FastAPI, Jinja2 and SQLite. <a href="/privacy">Privacy</a>{% if request.app.state.ga_measurement_id %} <button type="button" class="link-button" data-consent-open hidden>Cookie settings</button>{% endif %}</p>
       </footer>
     </main>
+    {% include "_consent.html" %}
   </body>
 </html>

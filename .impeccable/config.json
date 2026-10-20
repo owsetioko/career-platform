@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "app/templates/index.html"
+        ],
+        "createdAt": "2026-10-20T06:49:30.375Z",
+        "reason": "user confirmed: heading scale is intentional per DESIGN.md (2026-10-19)"
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "app/templates/privacy.html"
+        ],
+        "createdAt": "2026-10-20T06:49:30.385Z",
+        "reason": "user confirmed: heading scale is intentional per DESIGN.md (2026-10-19)"
+      }
+    ]
+  }
+}
