@@ -430,6 +430,29 @@ h2 {
   font-style: italic;
 }
 
+/* ---------- Privacy page: running text inside a section ---------- */
+
+.public .prose {
+  max-width: 65ch;
+  line-height: 1.6;
+}
+
+.public .prose > :first-child {
+  margin-top: 0;
+}
+
+.public .prose * + h3 {
+  margin-top: 2rem;
+}
+
+.public .prose ul {
+  padding-left: 1.25rem;
+}
+
+.public .prose li + li {
+  margin-top: 0.4rem;
+}
+
 .public .page-foot {
   padding-top: 1.5rem;
   border-top: 1px solid var(--hairline);
@@ -439,6 +462,81 @@ h2 {
   margin: 0;
   color: var(--slate);
   font-size: 0.875rem;
+}
+
+.public .link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* ---------- Analytics consent: a quiet sheet pinned to the bottom ---------- */
+
+.public .consent-banner {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 10;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid var(--navy-line);
+  border-radius: 4px;
+  background: var(--paper);
+  box-shadow: 0 6px 24px rgb(22 32 43 / 0.12);
+}
+
+.public .link-button[hidden],
+.public .consent-banner[hidden] {
+  display: none;
+}
+
+.public .consent-banner h2 {
+  position: static;
+  font-size: 1.1rem;
+}
+
+.public .consent-banner p {
+  margin: 0.4rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.public .consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+/* Accept and Decline carry equal weight so neither choice is nudged. */
+.public .consent-actions button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--navy);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--navy);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.public .consent-actions button:hover {
+  background: var(--navy-wash);
+}
+
+.public .consent-actions button:active {
+  transform: translateY(1px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -534,7 +632,8 @@ h2 {
 
   .public .page-nav,
   .public .contact-section,
-  .public .page-foot {
+  .public .page-foot,
+  .public .consent-banner {
     display: none;
   }
 

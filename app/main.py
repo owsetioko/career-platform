@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import secrets
 import tempfile
 from contextlib import suppress
@@ -32,6 +33,7 @@ from app.database import (
 APP_DIR = Path(__file__).resolve().parent
 PROFILE_CACHE_PATH = APP_DIR.parent / "data" / "public-profile.json"
 BUNDLED_FALLBACK_PATH = APP_DIR / "fallback-profile.json"
+GA_MEASUREMENT_ID_PATTERN = re.compile(r"G-[A-Z0-9]{4,20}")
 logger = logging.getLogger(__name__)
 load_dotenv(APP_DIR.parent / ".env")
 
@@ -316,6 +318,10 @@ def create_app() -> FastAPI:
     application = FastAPI(title=os.getenv("APP_TITLE", "Personal Resume Platform"))
     application.state.admin_configured = session_configured and hash_configured
     application.state.admin_password_hash = password_hash
+    measurement_id = os.getenv("GA_MEASUREMENT_ID", "").strip()
+    application.state.ga_measurement_id = (
+        measurement_id if GA_MEASUREMENT_ID_PATTERN.fullmatch(measurement_id) else None
+    )
     application.add_middleware(
         SessionMiddleware,
         secret_key=session_secret or secrets.token_urlsafe(48),
@@ -355,6 +361,10 @@ def create_app() -> FastAPI:
 
         _write_snapshot(public_data)
         return _render_profile(request, public_data)
+
+    @application.get("/privacy")
+    async def privacy(request: Request):
+        return templates.TemplateResponse(request=request, name="privacy.html")
 
     application.include_router(build_admin_router(templates, get_session))
     return application

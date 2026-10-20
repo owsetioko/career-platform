@@ -168,6 +168,7 @@ The web service needs these variables:
 | --- | --- |
 | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (reference to the Postgres service's private URL) |
 | `APP_TITLE` | `Personal Resume Platform` |
+| `GA_MEASUREMENT_ID` | `G-X0HGGMK1T8` (optional; turns on the opt-in analytics banner on public pages) |
 
 `SESSION_SECRET`, `ADMIN_PASSWORD_HASH`, and `SESSION_COOKIE_SECURE=true` are
 needed only to turn on the owner admin (see "Configure the owner admin").

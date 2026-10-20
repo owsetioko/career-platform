@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="What this site collects when you visit, why, who receives it, and your choices.">
+    <meta name="theme-color" content="#ffffff">
+    <title>Privacy</title>
+    <link rel="preload" href="{{ url_for('static', path='/fonts/source-serif-4-latin-opsz-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ url_for('static', path='/fonts/source-sans-3-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+  </head>
+  <body class="public">
+    <main class="profile">
+      <header class="profile-header">
+        <div class="identity">
+          <h1>Privacy</h1>
+          <p class="headline">What this site collects when you visit, why, who receives it, and what you can do about it.</p>
+        </div>
+        <p class="summary">Last updated [TO CONFIRM: date Google Analytics goes live].</p>
+      </header>
+
+      <section class="profile-section" id="short-version" aria-labelledby="short-version-heading">
+        <h2 id="short-version-heading">In short</h2>
+        <div class="section-body prose">
+          <ul>
+            <li>There are no accounts, sign-up forms or contact forms for visitors.</li>
+            <li>If you allow it, the site uses Google Analytics to count page views and clicks on links to other websites. Google Analytics stores cookies in your browser.</li>
+            <li>Like almost every website, the hosting service keeps basic logs of each request.</li>
+            <li>I don't sell this information, and I don't use it for advertising.</li>
+            <li>Google Analytics runs only after you choose Accept in the cookie banner. If you decline, or your browser doesn't run JavaScript, nothing is sent to Google. See <a href="#choices">Your choices</a>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="profile-section" id="collected" aria-labelledby="collected-heading">
+        <h2 id="collected-heading">What's collected</h2>
+        <div class="section-body prose">
+          <h3>Google Analytics</h3>
+          <p>Only if you accept, each time a page loads a script from Google runs in your browser and sends Google:</p>
+          <ul>
+            <li>the address and title of the page, and the page you came from if your browser shares it</li>
+            <li>basic device and browser details, such as browser type, operating system, screen size and language</li>
+            <li>roughly how long the page was open and in front of you</li>
+            <li>your approximate location (country, region or city). Google works this out from your IP address. Google says Google Analytics 4 doesn't log or store IP addresses.</li>
+            <li>a random ID stored in a cookie, so that repeat visits from the same browser count as the same visitor. The ID is not linked to your name.</li>
+            <li>when you click a link to another website, such as GitHub, the address of that link</li>
+          </ul>
+          <p>I don't send Google your name, email address or anything else that identifies you, and the site has no forms for you to type into. The tag turns off Google signals, which can connect visits to people signed in to a Google account, and turns off advertising personalization.</p>
+
+          <h3>Cookies</h3>
+          <ul>
+            <li><code>_ga</code> and <code>_ga_X0HGGMK1T8</code>: set by Google Analytics on this site's domain, only after you accept, to tell visitors apart. By default they last up to two years, and each visit extends them. Choosing Decline later deletes them.</li>
+            <li><code>analytics-consent</code>: not a cookie but an entry in your browser's local storage that remembers whether you chose Accept or Decline. It is never sent anywhere.</li>
+            <li><code>resume_session</code>: used only by the owner's sign-in area at <code>/admin</code>, and only when that area is used. The public pages don't set it.</li>
+          </ul>
+
+          <h3>Hosting logs</h3>
+          <p>The site runs on Railway. For each request, the app's log records your IP address, the time, the page you asked for and whether it loaded. Railway's own network may record further details, such as your browser's identifying string.</p>
+
+          <h3>Email</h3>
+          <p>If you email me, the message is stored by Zoho Mail, which hosts my mailbox. I use it only to reply to you.</p>
+        </div>
+      </section>
+
+      <section class="profile-section" id="why" aria-labelledby="why-heading">
+        <h2 id="why-heading">Why</h2>
+        <div class="section-body prose">
+          <ul>
+            <li><strong>Analytics:</strong> to see how many people visit, where they arrive from, and which outside links get clicked, so I can tell whether the site is helping my job search.</li>
+            <li><strong>Hosting logs:</strong> to keep the site running, fix errors and spot abuse.</li>
+          </ul>
+          <p>I don't use this information to build profiles of individual people, and I don't sell it.</p>
+        </div>
+      </section>
+
+      <section class="profile-section" id="recipients" aria-labelledby="recipients-heading">
+        <h2 id="recipients-heading">Who receives it</h2>
+        <div class="section-body prose">
+          <ul>
+            <li><strong>Google</strong> runs Google Analytics and may process the data in the United States and other countries. Google explains its practices in <a href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites or apps that use our services</a>. This site's Analytics data-sharing settings are [TO CONFIRM: which "Data sharing settings" are on].</li>
+            <li><strong>Railway</strong> hosts the site and keeps its logs.</li>
+            <li><strong>Zoho</strong> hosts my email.</li>
+            <li><strong>Me:</strong> I see Analytics reports, which show totals and trends rather than named people.</li>
+          </ul>
+          <p>When you follow a link to another site, such as GitHub, that site's own privacy policy applies.</p>
+        </div>
+      </section>
+
+      <section class="profile-section" id="retention" aria-labelledby="retention-heading">
+        <h2 id="retention-heading">How long it's kept</h2>
+        <div class="section-body prose">
+          <ul>
+            <li><strong>Analytics:</strong> detailed visit records are kept for [TO CONFIRM: 2 or 14 months], then deleted by Google. Summary totals in reports can remain after that.</li>
+            <li><strong>Analytics cookies:</strong> up to two years in your browser, unless you decline or delete them sooner.</li>
+            <li><strong>Your consent choice:</strong> in your browser until you clear this site's data.</li>
+            <li><strong>Hosting logs:</strong> [TO CONFIRM: Railway log retention for this plan].</li>
+            <li><strong>Email:</strong> until I delete it.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="profile-section" id="choices" aria-labelledby="choices-heading">
+        <h2 id="choices-heading">Your choices</h2>
+        <div class="section-body prose">
+          <ul>
+            <li><strong>Accept or Decline</strong> in the banner shown on your first visit. Nothing goes to Google until you accept.</li>
+            <li><strong>Change your mind</strong> at any time with "Cookie settings" at the bottom of each page. Choosing Decline stops Analytics and deletes its cookies.</li>
+            <li>Block or delete cookies in your browser settings, or use a private window. Deleting the <code>_ga</code> cookies resets your random ID.</li>
+            <li>Use a browser setting or extension that blocks trackers. Many of them block Google Analytics.</li>
+            <li>Install Google's <a href="https://tools.google.com/dlpage/gaoptout">Google Analytics Opt-out Browser Add-on</a> for desktop browsers.</li>
+          </ul>
+          <p>If your browser blocks local storage, the site can't remember your choice, so the banner appears again on each page. The site doesn't read Global Privacy Control or Do Not Track signals; use the banner instead. Hosting logs are recorded for every request, and you can't opt out of them.</p>
+          <p>Analytics records are tied to a random cookie ID, not to your name, so I usually can't find or delete one person's records. If you have a question or request, email [TO CONFIRM: contact address] and I'll do what I can.</p>
+        </div>
+      </section>
+
+      <section class="profile-section" id="changes" aria-labelledby="changes-heading">
+        <h2 id="changes-heading">Changes</h2>
+        <div class="section-body prose">
+          <p>If what the site collects changes, for example if I add a tool, I'll update this page and the date at the top.</p>
+        </div>
+      </section>
+
+      <footer class="page-foot">
+        <p><a href="/">Back to resume</a>{% if request.app.state.ga_measurement_id %} <button type="button" class="link-button" data-consent-open hidden>Cookie settings</button>{% endif %}</p>
+      </footer>
+    </main>
+    {% include "_consent.html" %}
+  </body>
+</html>

@@ -17,7 +17,7 @@ from app.database import (
     Skill,
     create_database_engine,
 )
-from app.main import app, get_session
+from app.main import app, create_app, get_session
 
 
 def _install_unavailable_database(monkeypatch) -> None:
@@ -510,3 +510,90 @@ def test_unusable_cache_uses_bundled_fallback(
     assert response.status_code == 200
     assert "Business Analytics Senior" in response.text
     assert "profile data is temporarily unavailable" in response.text
+
+
+def test_privacy_page_renders_without_database(monkeypatch) -> None:
+    _install_unavailable_database(monkeypatch)
+
+    response = TestClient(app).get("/privacy")
+
+    assert response.status_code == 200
+    assert "<h1>Privacy</h1>" in response.text
+    assert "Google Analytics" in response.text
+    assert "set-cookie" not in response.headers
+
+
+def test_public_footer_links_to_privacy_page(monkeypatch) -> None:
+    _install_unavailable_database(monkeypatch)
+
+    response = TestClient(app).get("/")
+
+    assert response.status_code == 200
+    assert '<a href="/privacy">Privacy</a>' in response.text
+
+
+def _app_with_measurement_id(monkeypatch, measurement_id: str | None):
+    if measurement_id is None:
+        monkeypatch.delenv("GA_MEASUREMENT_ID", raising=False)
+    else:
+        monkeypatch.setenv("GA_MEASUREMENT_ID", measurement_id)
+    application = create_app()
+    _install_unavailable_database(monkeypatch)
+    monkeypatch.setitem(
+        application.dependency_overrides,
+        get_session,
+        app.dependency_overrides[get_session],
+    )
+    return application
+
+
+@pytest.mark.parametrize("path", ["/", "/privacy"])
+def test_public_pages_omit_analytics_without_measurement_id(monkeypatch, path) -> None:
+    response = TestClient(_app_with_measurement_id(monkeypatch, None)).get(path)
+
+    assert response.status_code == 200
+    assert "consent.js" not in response.text
+    assert "consent-banner" not in response.text
+    assert "googletagmanager" not in response.text
+
+
+@pytest.mark.parametrize("path", ["/", "/privacy"])
+def test_public_pages_load_consent_script_once_and_no_google_tag_before_consent(
+    monkeypatch, path
+) -> None:
+    client = TestClient(_app_with_measurement_id(monkeypatch, "G-X0HGGMK1T8"))
+
+    response = client.get(path)
+
+    assert response.status_code == 200
+    assert response.text.count("/static/js/consent.js") == 1
+    assert 'data-measurement-id="G-X0HGGMK1T8"' in response.text
+    assert response.text.count('id="consent-banner"') == 1
+    assert "data-consent-open" in response.text
+    assert "googletagmanager" not in response.text
+    assert "set-cookie" not in response.headers
+
+
+def test_consent_script_loads_google_tag_only_after_consent() -> None:
+    response = TestClient(app).get("/static/js/consent.js")
+
+    assert response.status_code == 200
+    assert "https://www.googletagmanager.com/gtag/js?id=" in response.text
+    assert 'stored() === "granted"' in response.text
+
+
+def test_admin_pages_never_load_analytics(monkeypatch) -> None:
+    client = TestClient(_app_with_measurement_id(monkeypatch, "G-X0HGGMK1T8"))
+
+    response = client.get("/admin/login")
+
+    assert "consent.js" not in response.text
+    assert "G-X0HGGMK1T8" not in response.text
+
+
+@pytest.mark.parametrize("value", ["", "UA-12345-1", "G-x0hg\"><script>", "GTM-ABC123"])
+def test_malformed_measurement_id_disables_analytics(monkeypatch, value) -> None:
+    response = TestClient(_app_with_measurement_id(monkeypatch, value)).get("/")
+
+    assert response.status_code == 200
+    assert "consent.js" not in response.text

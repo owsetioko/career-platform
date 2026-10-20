@@ -1,0 +1,13 @@
+{#- Analytics consent banner and loader. Include once per public page, at the end of <body>. -#}
+{%- set ga_measurement_id = request.app.state.ga_measurement_id -%}
+{%- if ga_measurement_id %}
+    <section class="consent-banner" id="consent-banner" aria-labelledby="consent-heading" hidden>
+      <h2 id="consent-heading">Analytics cookies</h2>
+      <p>May I use Google Analytics to count visits and clicks on links to other sites? It sets cookies and sends data about your visit to Google. Nothing is sent unless you accept. <a href="/privacy">Privacy details</a></p>
+      <div class="consent-actions">
+        <button type="button" data-consent="granted">Accept</button>
+        <button type="button" data-consent="denied">Decline</button>
+      </div>
+    </section>
+    <script src="{{ url_for('static', path='/js/consent.js') }}" data-measurement-id="{{ ga_measurement_id }}"></script>
+{%- endif %}
