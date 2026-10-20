@@ -597,3 +597,22 @@ def test_malformed_measurement_id_disables_analytics(monkeypatch, value) -> None
 
     assert response.status_code == 200
     assert "consent.js" not in response.text
+
+
+@pytest.mark.parametrize("path", ["/", "/privacy", "/admin/login"])
+def test_static_asset_urls_are_root_relative(monkeypatch, path) -> None:
+    # Absolute URLs pick up the scheme the app sees; behind a TLS proxy that
+    # can be http://, which browsers block as mixed content on https pages.
+    from argon2 import PasswordHasher
+
+    monkeypatch.setenv("ADMIN_PASSWORD_HASH", PasswordHasher().hash("unused"))
+    monkeypatch.setenv("SESSION_SECRET", "test-only-session-secret-" + "x" * 40)
+    client = TestClient(_app_with_measurement_id(monkeypatch, "G-X0HGGMK1T8"))
+
+    response = client.get(path)
+
+    assert response.status_code == 200
+    assert 'href="/static/css/styles.css"' in response.text
+    assert "://testserver/static" not in response.text
+    if path != "/admin/login":
+        assert 'src="/static/js/consent.js"' in response.text

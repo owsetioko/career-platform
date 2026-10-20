@@ -160,7 +160,9 @@ settings:
 - Railpack installs dependencies from `uv.lock` and uses Python from `.python-version`.
 - Before each deploy goes live, `python -m app.database` creates any missing
   tables and the starter `owner` row. It is safe to run on every deploy.
-- Uvicorn trusts Railway's proxy headers, so static URLs are built as `https://`.
+- Templates link static files with root-relative paths (`/static/...`), so
+  pages load correctly over HTTPS whatever scheme the app sees behind
+  Railway's proxy.
 
 The web service needs these variables:
 

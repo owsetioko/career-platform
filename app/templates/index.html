@@ -22,9 +22,9 @@
     <meta property="og:title" content="{{ page_title }}">
     <meta property="og:description" content="{{ page_description }}">
     <title>{{ page_title }}</title>
-    <link rel="preload" href="{{ url_for('static', path='/fonts/source-serif-4-latin-opsz-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ url_for('static', path='/fonts/source-sans-3-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link rel="preload" href="{{ url_for('static', path='/fonts/source-serif-4-latin-opsz-normal.woff2').path }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ url_for('static', path='/fonts/source-sans-3-latin-wght-normal.woff2').path }}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css').path }}">
   </head>
   <body class="public">
     <main class="profile">

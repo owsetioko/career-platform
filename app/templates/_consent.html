@@ -9,5 +9,5 @@
         <button type="button" data-consent="denied">Decline</button>
       </div>
     </section>
-    <script src="{{ url_for('static', path='/js/consent.js') }}" data-measurement-id="{{ ga_measurement_id }}"></script>
+    <script src="{{ url_for('static', path='/js/consent.js').path }}" data-measurement-id="{{ ga_measurement_id }}"></script>
 {%- endif %}
