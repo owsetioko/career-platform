@@ -20,6 +20,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session, selectinload
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.templating import Jinja2Templates
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.admin import build_admin_router, is_argon2id_hash
 from app.database import (
@@ -329,6 +330,12 @@ def create_app() -> FastAPI:
         same_site="lax",
         https_only=os.getenv("SESSION_COOKIE_SECURE", "").strip().lower()
         in {"1", "true", "yes", "on"},
+    )
+    # Added last so it runs first: trust X-Forwarded-Proto/-For from the TLS
+    # proxy regardless of how the server was started.
+    application.add_middleware(
+        ProxyHeadersMiddleware,
+        trusted_hosts=os.getenv("FORWARDED_ALLOW_IPS", "127.0.0.1"),
     )
     application.mount(
         "/static",

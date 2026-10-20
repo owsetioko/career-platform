@@ -616,3 +616,29 @@ def test_static_asset_urls_are_root_relative(monkeypatch, path) -> None:
     assert "://testserver/static" not in response.text
     if path != "/admin/login":
         assert 'src="/static/js/consent.js"' in response.text
+
+
+@pytest.mark.parametrize(
+    ("allowed", "expected_location"),
+    [
+        (None, "http://testserver/privacy"),
+        ("*", "https://testserver/privacy"),
+    ],
+)
+def test_forwarded_proto_is_trusted_only_from_configured_proxies(
+    monkeypatch, allowed, expected_location
+) -> None:
+    if allowed is None:
+        monkeypatch.delenv("FORWARDED_ALLOW_IPS", raising=False)
+    else:
+        monkeypatch.setenv("FORWARDED_ALLOW_IPS", allowed)
+    client = TestClient(create_app())
+
+    response = client.get(
+        "/privacy/",
+        headers={"X-Forwarded-Proto": "https"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 307
+    assert response.headers["location"] == expected_location
