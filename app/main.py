@@ -369,6 +369,29 @@ def create_app() -> FastAPI:
         _write_snapshot(public_data)
         return _render_profile(request, public_data)
 
+    # TEMPORARY: proxy-scheme diagnostic. Remove after reading it once.
+    @application.get("/_diag/proxy")
+    async def proxy_diagnostic(request: Request):
+        import sys
+
+        def redact(arg: str) -> str:
+            if "=" in arg and not arg.startswith(("--forwarded-allow-ips", "--host", "--port")):
+                return arg.split("=", 1)[0] + "=<redacted>"
+            return "<redacted>" if "://" in arg else arg
+
+        return {
+            "commit": os.getenv("RAILWAY_GIT_COMMIT_SHA", "")[:7],
+            "argv": [redact(arg) for arg in sys.argv],
+            "forwarded_allow_ips": os.getenv("FORWARDED_ALLOW_IPS"),
+            "scheme_seen_by_app": request.url.scheme,
+            "x_forwarded_proto": request.headers.get("x-forwarded-proto"),
+            "proxy_header_names": sorted(
+                name
+                for name in request.headers.keys()
+                if name.startswith(("x-forwarded", "forwarded", "x-real"))
+            ),
+        }
+
     @application.get("/privacy")
     async def privacy(request: Request):
         return templates.TemplateResponse(request=request, name="privacy.html")
