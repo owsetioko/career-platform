@@ -192,6 +192,40 @@ To run the Postgres integration tests, point `TEST_DATABASE_URL` at a local
 database (for example `postgresql://localhost/career_platform_test`). The
 tests refuse any host other than localhost because they drop tables.
 
+## Costs
+
+What running this project has cost so far, checked 2026-10-22. No card has
+been charged; everything is covered by student credit, a trial grant, or a
+free plan.
+
+| Service | What it's for | Plan | Cost so far |
+| --- | --- | --- | --- |
+| Azure | The original VM (`rg-career-platform`), now deallocated | Azure for Students credit | ≈ $4.70 (Sep 1 to Oct 21): $3.53 static public IP, $1.16 disk, $0.00 VM compute, ~$0 bandwidth |
+| Railway | Production web service and PostgreSQL | Trial: one-time $5.00 credit, 1 GB RAM, 2 vCPU, 1 GB disk | $0.54 usage (Oct 8 to 22), [screenshot](docs/evidence/railway-usage.png) |
+| Namecheap | The `csetioko.me` domain | GitHub Student Pack | $0 |
+| Zoho Mail | `chris@csetioko.me` mailbox | GitHub Student Pack | $0 |
+
+The Azure figure comes from a Cost Management query scoped to the resource
+group. The VM size had no compute charge, but the disk and the reserved
+public IP keep billing while the VM is deallocated. Deleting the resource
+group (`az group delete -n rg-career-platform`) stops those charges and
+removes the rollback path.
+
+Railway's trial credit is a one-time grant. When it runs out or the trial
+ends, the site needs the Hobby plan (paid monthly) to stay up. The domain
+and the Zoho offer also run out when the Student Pack benefit ends, so check
+both renewal dates.
+
+## Reflection
+
+The biggest surprise was that the deployment failed before my code even ran. Railway’s build stopped at “Railpack failed to prepare the build,” and I had to dig into the deployment details to see why.
+
+On the Azure VM I did the server work myself just like opening SSH and the web ports in the network security group, running Nginx etc. Railway handles the build, running the app, and HTTPS for me, so I just connect the repo and add my domain.
+
+The checks that actually proved things were dig to see where the domain’s DNS really pointed, and curl -Iv to see which certificate the site was serving.
+
+I would definitely start with Railway as it is much simpler and easier and I would also check the DNS records before moving so that the old VM doesn't keep receiving traffic.
+
 ## Future Azure Linux VM readiness (guidance only)
 
 These notes describe a possible later single-VM setup; they do not create Azure
