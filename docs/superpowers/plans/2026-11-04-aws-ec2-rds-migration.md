@@ -8,7 +8,7 @@
 
 **Tech Stack:** AWS CLI 2, EC2, RDS for PostgreSQL 18.6, Ubuntu 24.04 (x86), Nginx, Certbot, systemd, uv, Python 3.12, FastAPI, Uvicorn, SQLAlchemy, psycopg 3.
 
-**Status:** In progress, paused 2026-11-04. Tasks 2 and 3 are done: the firewall groups, SSH key, Elastic IP, EC2 server and RDS instance exist, and their IDs are in `~/.config/career-platform/aws.env`. The server is empty and DNS is unchanged, so Railway still serves the site. Tasks 0 and 1 are still open, and Task 1 comes next because the server clones this branch from GitHub. Their checkboxes below were not ticked as they ran.
+**Status:** Cut over on 2026-11-09. `csetioko.me` is served from AWS. Tasks 1–7 are done, and Task 8 was merged early at Chris's request. See `migration-notes.md` for every deviation; the checkboxes below were not ticked as the tasks ran.
 
 **Differences from the steps below, as run:**
 - RDS backup retention is 1 day, not 7. The account is on the free plan, which refused 7 (`FreeTierRestrictionError`).
