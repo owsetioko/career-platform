@@ -523,6 +523,16 @@ def test_privacy_page_renders_without_database(monkeypatch) -> None:
     assert "set-cookie" not in response.headers
 
 
+def test_privacy_page_names_aws_as_host(monkeypatch) -> None:
+    _install_unavailable_database(monkeypatch)
+
+    response = TestClient(app).get("/privacy")
+
+    assert "Amazon Web Services" in response.text
+    assert "up to 30 days" in response.text
+    assert "Railway" not in response.text
+
+
 def test_public_footer_links_to_privacy_page(monkeypatch) -> None:
     _install_unavailable_database(monkeypatch)
 
