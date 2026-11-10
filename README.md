@@ -318,9 +318,11 @@ address and there is no AAAA record.
 
 ### Next steps
 
-- [ ] As root: check the AWS credit balance and expiry, upgrade from the free
-      plan before relying on the site long-term, add a $35/month budget
-      alert, and confirm MFA on root.
+- [ ] As root: check the AWS credit balance and expiry, add a zero-spend
+      budget (the course guide's choice; it emails on the first charge not
+      covered by credits), and confirm MFA on root. Stay on the free plan for
+      the course; decide at semester's end whether to keep paying, move to a
+      cheaper host, or delete the AWS resources.
 - [ ] Send an email round-trip to `chris@csetioko.me` to confirm mail after
       the DNS change.
 - [ ] Test the fallback page with RDS unreachable, and a point-in-time restore.
