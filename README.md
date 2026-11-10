@@ -1,8 +1,9 @@
 # Personal Resume Platform
 
-A Codespaces-first personal resume site built with FastAPI, Jinja2, SQLite,
-and plain CSS. The public page can use a saved profile snapshot if SQLite is
-temporarily unavailable. An optional password-protected admin area lets the
+A Codespaces-first personal resume site built with FastAPI, Jinja2,
+SQLAlchemy and plain CSS. It uses SQLite locally and PostgreSQL in production,
+where it runs on AWS (see [Deploy on AWS](#deploy-on-aws)). The public page can
+use a saved profile snapshot if the database is temporarily unavailable. An optional password-protected admin area lets the
 owner edit the profile and its experience, skills, projects, and education.
 
 ## Start in GitHub Codespaces
@@ -151,42 +152,193 @@ admin credentials.
   in `/admin`, saved the form, and left the content item visible. A hidden
   item is intentionally omitted from the public page.
 
-## Deploy on Railway
+## Deploy on AWS
 
-Production runs on Railway: one web service built from this repository, plus
-a PostgreSQL service in the same project. `railway.json` holds the deploy
-settings:
+Since 2026-11-09, `csetioko.me` runs on AWS in `us-east-1`: one EC2 server
+for the app and a private RDS PostgreSQL database. It moved from Railway,
+which stopped serving the site that day. The step-by-step plan is in
+[docs/superpowers/plans/2026-11-04-aws-ec2-rds-migration.md](docs/superpowers/plans/2026-11-04-aws-ec2-rds-migration.md),
+and every place the real run differed from it is in
+[migration-notes.md](migration-notes.md).
 
-- Railpack installs dependencies from `uv.lock` and uses Python from `.python-version`.
-- Before each deploy goes live, `python -m app.database` creates any missing
-  tables and the starter `owner` row. It is safe to run on every deploy.
-- Templates link static files with root-relative paths (`/static/...`), so
-  pages load correctly over HTTPS whatever scheme the app sees behind
-  Railway's proxy.
+### Architecture and why
 
-The web service needs these variables:
+```mermaid
+flowchart LR
+    visitor(["Visitor's browser"])
+    laptop(["Chris's laptop"])
+    gh["GitHub<br/>owsetioko/career-platform · main"]
+    dns["Cloudflare DNS · DNS only<br/>csetioko.me, www, aws → Elastic IP<br/>MX, SPF, DKIM, DMARC → Zoho Mail"]
+    railway["Railway · DOWN since 2026-11-09<br/>no longer in DNS · not yet deleted"]
+    localbak[("Laptop: pg_dump copies<br/>backups/ · git-ignored")]
+
+    subgraph aws["AWS · us-east-1"]
+        subgraph vpc["Default VPC · subnet us-east-1a"]
+            sgweb{{"Security group career-platform-web<br/>443 and 80 from anywhere<br/>22 from the laptop's IP only"}}
+            subgraph ec2["EC2 t3.micro · Ubuntu 24.04 · Elastic IP"]
+                nginx["Nginx<br/>HTTPS ends here<br/>Let's Encrypt via Certbot<br/>80 → 301 to HTTPS · www → apex"]
+                app["career-platform.service<br/>Uvicorn on 127.0.0.1:8000, 2 workers<br/>runs as user career, not root"]
+                snap[["data/public-profile.json<br/>last-good page snapshot"]]
+            end
+            sgdb{{"Security group career-platform-db<br/>5432 from the web group only"}}
+            subgraph rds["RDS PostgreSQL 18.6 · db.t3.micro · Single-AZ<br/>private · encrypted · deletion protection"]
+                db[("career_platform<br/>owned by role career_app")]
+            end
+            backups[("RDS automated backups<br/>daily + point-in-time · kept 1 day")]
+        end
+    end
+
+    visitor -- "1 · look up" --> dns
+    visitor -- "2 · HTTPS 443" --> sgweb --> nginx
+    nginx -- "HTTP, inside the server" --> app
+    app -- "TLS, certificate verified" --> sgdb --> db
+    app --> snap
+    db -.-> backups
+    laptop -- "SSH 22 · key only · the only admin path" --> sgweb
+    gh -- "deploy.sh pulls main, run over SSH" --> app
+    db -. "pg_dump over SSH" .-> localbak
+```
+
+- **EC2 + RDS** was the balance between three options compared before the move.
+  EC2 with PostgreSQL on the same server was cheaper (about $10/month) but left
+  backups, upgrades and recovery to me. Lambda with API Gateway was the least
+  to operate, but needed code changes and has cold starts. EC2 + RDS needed no
+  code changes and gets managed, encrypted database backups. The cost is about
+  $28/month and one server to look after.
+- **x86 `t3.micro`, not ARM:** the course IAM policy allows only `t3.micro`
+  and `t3.small`.
+- **Nginx + Certbot, not a load balancer:** AWS's own certificates (ACM)
+  attach only to services like load balancers, which would add about
+  $16–22/month. Certbot renews the Let's Encrypt certificates automatically.
+- **Private database:** RDS has no public address, and only the web server's
+  security group can reach port 5432. The app connects as `career_app`, a
+  role that owns only this database, with `sslmode=verify-full` against
+  AWS's certificate bundle.
+- **SSH, not Session Manager:** the IAM policy denies Systems Manager, so
+  administration is SSH with a key, limited to the laptop's IP.
+- **Admin is off in production**, as it was on Railway. Turning it on needs
+  login rate limiting first.
+
+### Running and deploying
+
+Everything on the server lives in `/opt/career-platform`, owned by the
+`career` system user. The files in [`deploy/`](deploy/) are the service
+definition, the Nginx site, the deploy script and a database fingerprint
+query.
+
+```bash
+# Connect (from the laptop)
+ssh -i ~/.ssh/isba4775_aws ubuntu@csetioko.me
+
+# Deploy the latest main (on the server)
+bash /opt/career-platform/deploy/deploy.sh
+
+# Health and logs (on the server)
+systemctl status career-platform nginx
+sudo journalctl -u career-platform -n 50 --no-pager
+```
+
+`deploy.sh` pulls `main`, installs from `uv.lock`, runs `python -m app.database`,
+restarts the service and fails unless the home page shows the real profile.
+A `200` alone isn't enough, because the app serves its fallback page with a
+`200` when the database is down.
+
+If SSH times out, the laptop's IP has probably changed. Add the new one to
+the web security group, and remove the old `/32` rule:
+
+```bash
+aws ec2 authorize-security-group-ingress --profile isba-4775 --group-id <web-sg-id> \
+  --protocol tcp --port 22 --cidr $(curl -s https://checkip.amazonaws.com)/32
+```
+
+The server's `/opt/career-platform/.env` (mode 600, never committed) sets:
 
 | Variable | Value |
 | --- | --- |
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (reference to the Postgres service's private URL) |
+| `DATABASE_URL` | `postgresql://career_app:…@<rds-endpoint>:5432/career_platform?sslmode=verify-full&sslrootcert=/etc/career-platform/rds-global-bundle.pem` |
 | `APP_TITLE` | `Personal Resume Platform` |
-| `FORWARDED_ALLOW_IPS` | `*` (trust Railway's proxy for `X-Forwarded-Proto`, so the app sees `https`) |
-| `GA_MEASUREMENT_ID` | `G-X0HGGMK1T8` (optional; turns on the opt-in analytics banner on public pages) |
+| `GA_MEASUREMENT_ID` | `G-X0HGGMK1T8` |
 
-`SESSION_SECRET`, `ADMIN_PASSWORD_HASH`, and `SESSION_COOKIE_SECURE=true` are
-needed only to turn on the owner admin (see "Configure the owner admin").
+`FORWARDED_ALLOW_IPS` is deliberately unset: the default `127.0.0.1` trusts
+only the local Nginx. Railway's `*` would let visitors fake their IP address.
 
-To load resume content from a local SQLite file into an empty Railway
-database, put the Postgres service's public URL in `.env` as
-`RAILWAY_DATABASE_URL`, then run:
+Certbot edited the live Nginx file on the server, so the repo copy in
+`deploy/nginx-career-platform.conf` has no HTTPS lines. Copying it onto the
+server again would turn HTTPS off until `sudo certbot --nginx` is rerun.
+
+### Backups and restore
+
+| Copy | Where | How long | Restore tested? |
+| --- | --- | --- | --- |
+| RDS automated backups | AWS, same account and region | 1 day (the free plan's maximum) | No |
+| `pg_dump` files | Laptop, `backups/` (git-ignored) | Until deleted | Yes, twice |
+
+- **From a dump** (tested): RDS has no public address, so copy the dump to
+  the server with `scp`, then run `pg_restore --no-owner --no-acl
+  --single-transaction --exit-on-error` there, into an empty database, before
+  `deploy.sh` or `python -m app.database` touches it. `pg_restore` must be
+  version 18 or newer. Then run `deploy/db-fingerprint.sql` against the source
+  and the restored database, and `diff` the two outputs. Done on 2026-11-02
+  (into a local Postgres 18) and 2026-11-09 (into RDS). Every table's row
+  count and content checksum and every ID sequence matched.
+- **From RDS backups** (not tested yet): `aws rds
+  restore-db-instance-to-point-in-time` creates a new instance from any moment
+  in the last day. Point `DATABASE_URL` at it and redeploy.
+- **Taking a new dump:** on the server, `pg_dump "$DATABASE_URL"
+  --format=custom --no-owner --no-acl`, then `scp` the file to the laptop's
+  `backups/` and delete it from the server. Copies outside AWS matter: if the
+  account closes, its RDS backups go with it.
+
+### What was tested on `aws.csetioko.me`
+
+Before `csetioko.me` moved, the AWS copy was tested at its own name, `aws.csetioko.me`
+(details and evidence in [migration-notes.md](migration-notes.md)). All of these passed:
+
+- The `aws` DNS record pointed at the Elastic IP, DNS only, and no other record
+  changed (checked against a snapshot of all 10 records taken beforehand).
+- `nslookup` answered with the Elastic IP from the laptop.
+- HTTP redirected to HTTPS. The Let's Encrypt certificate verified over TLS 1.3,
+  and `certbot renew --dry-run` succeeded.
+- The home and privacy pages, CSS, JavaScript and fonts loaded. Admin returned
+  `503` (off by design) and unknown paths `404`. 20 of 20 loads succeeded, at
+  about 0.33 s each.
+- All 26 visible database items appeared on the page, with no fallback or
+  placeholder content.
+- The app's database connection used TLS as `career_app`. Logs recorded real
+  visitor IPs, as the privacy page says. Port 8000 and the database weren't
+  reachable from outside, and everything came back after a reboot.
+
+After the cutover, the same checks passed on `csetioko.me` and `www`, and the
+mail DNS records were identical to before.
+
+**Not tested yet:** the page when RDS is unreachable, restoring from RDS's own
+backups, a real (not dry-run) certificate renewal, phones and other
+browsers, and heavier traffic. IPv6 doesn't work: the server has no IPv6
+address and there is no AAAA record.
+
+### Next steps
+
+- [ ] As root: check the AWS credit balance and expiry, upgrade from the free
+      plan before relying on the site long-term, add a $35/month budget
+      alert, and confirm MFA on root.
+- [ ] Send an email round-trip to `chris@csetioko.me` to confirm mail after
+      the DNS change.
+- [ ] Test the fallback page with RDS unreachable, and a point-in-time restore.
+- [ ] Add a free uptime monitor; nothing alerts on an outage today.
+- [ ] Add login rate limiting before turning admin on.
+- [ ] Delete the Railway project and the leftover Azure resource group, which
+      still bills for its disk and IP.
+- [ ] Add a passphrase to the SSH key, and narrow `isba-student`'s permissions
+      now that the build is done.
+
+### Earlier hosting
+
+Production ran on Railway (web service + PostgreSQL) from 2026-10-08 to
+2026-11-09, and on an Azure VM with SQLite before that. `railway.json` and
+`app/copy_database.py` remain from the Railway move. `copy_database` loads a
+local SQLite file into an empty Postgres database:
 
     uv run python -m app.copy_database data/resume.db
-
-It keeps row IDs, resets ID sequences, and refuses to run if the target
-already holds resume content.
-
-The page snapshot in `data/public-profile.json` lives on the container's
-disk and is rebuilt after each deploy on the first successful page load.
 
 To run the Postgres integration tests, point `TEST_DATABASE_URL` at a local
 database (for example `postgresql://localhost/career_platform_test`). The
@@ -194,14 +346,15 @@ tests refuse any host other than localhost because they drop tables.
 
 ## Costs
 
-What running this project has cost so far, checked 2026-10-22. No card has
-been charged; everything is covered by student credit, a trial grant, or a
-free plan.
+What running this project has cost so far, checked 2026-10-22, plus the AWS
+estimate added 2026-11-09. No card has been charged; everything is covered by
+student credit, a trial grant, or a free plan.
 
 | Service | What it's for | Plan | Cost so far |
 | --- | --- | --- | --- |
 | Azure | The original VM (`rg-career-platform`), now deallocated | Azure for Students credit | ≈ $4.70 (Sep 1 to Oct 21): $3.53 static public IP, $1.16 disk, $0.00 VM compute, ~$0 bandwidth |
-| Railway | Production web service and PostgreSQL | Trial: one-time $5.00 credit, 1 GB RAM, 2 vCPU, 1 GB disk | $0.54 usage (Oct 8 to 22), [screenshot](docs/evidence/railway-usage.png) |
+| AWS | Production since 2026-11-09: EC2, RDS, Elastic IP | Free plan with starting credits | Estimated **$27.96/month** on-demand (see below); actual charges not yet checked |
+| Railway | Production web service and PostgreSQL until 2026-11-09 (now down) | Trial: one-time $5.00 credit, 1 GB RAM, 2 vCPU, 1 GB disk | $0.54 usage (Oct 8 to 22), [screenshot](docs/evidence/railway-usage.png) |
 | Namecheap | The `csetioko.me` domain | GitHub Student Pack | $0 |
 | Zoho Mail | `chris@csetioko.me` mailbox | GitHub Student Pack | $0 |
 
@@ -211,8 +364,28 @@ public IP keep billing while the VM is deallocated. Deleting the resource
 group (`az group delete -n rg-career-platform`) stops those charges and
 removes the rollback path.
 
+The AWS estimate uses AWS's public us-east-1 price lists (published
+2026-10-29 to 2026-11-04) for 730 hours a month:
+
+| AWS item | Rate | Per month |
+| --- | --- | --- |
+| EC2 `t3.micro` | $0.0104/hour | $7.59 |
+| EC2 disk, 16 GB gp3 | $0.08/GB-month | $1.28 |
+| Public IPv4 (Elastic IP) | $0.005/hour | $3.65 |
+| RDS `db.t3.micro`, Single-AZ, PostgreSQL | $0.018/hour | $13.14 |
+| RDS storage, 20 GB gp3 | $0.115/GB-month | $2.30 |
+| RDS backups | free up to 20 GB, the size of the provisioned storage | $0.00 |
+| Data transfer out | first 100 GB/month free | $0.00 |
+| **Total** | | **$27.96** |
+
+On the AWS free plan, the account closes when the plan period ends or its
+credits run out, and is deleted 90 days later unless it's upgraded. At this
+rate, $100 of credit lasts about 3.6 months. Stopping the server doesn't stop
+the IP, disk and database charges; only deleting them does.
+
 Railway's trial credit is a one-time grant. When it runs out or the trial
-ends, the site needs the Hobby plan (paid monthly) to stay up. The domain
+ends, the site needs the Hobby plan (paid monthly) to stay up. Railway
+stopped serving the site on 2026-11-09. The domain
 and the Zoho offer also run out when the Student Pack benefit ends, so check
 both renewal dates.
 

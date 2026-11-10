@@ -50,3 +50,4 @@ This repo is public, so no IP addresses, account IDs, passwords or resource IDs 
 - Phones or browsers other than `curl`, and traffic beyond 20 requests in a row.
 - IPv6. The server has no IPv6 address and there's no AAAA record, so IPv6-only visitors can't reach it.
 - **The guide's premise that Railway keeps serving the real domain no longer holds.** `csetioko.me` returns Railway's `404 Application not found` (`x-railway-fallback: true`), so the main domain is down until the cutover in section 11.
+- **2026-11-09:** README updated for AWS (course guide section 12): architecture diagram, why EC2 + RDS, running and deploying, backups and restore, what was tested, cost table, next steps. The Mermaid diagram was checked by hand; rendering it locally was blocked.
