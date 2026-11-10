@@ -51,3 +51,4 @@ This repo is public, so no IP addresses, account IDs, passwords or resource IDs 
 - **The guide's premise that Railway keeps serving the real domain no longer holds.** `csetioko.me` returns Railway's `404 Application not found` (`x-railway-fallback: true`), so the main domain is down until the cutover in section 11.
 - **2026-11-09:** README updated for AWS (course guide section 12): architecture diagram, why EC2 + RDS, running and deploying, backups and restore, what was tested, cost table, next steps. The Mermaid diagram was checked by hand; rendering it locally was blocked.
 - **2026-11-09:** Chris checked the browser padlock (certificate valid) and the Cloudflare dashboard (screenshot in `docs/evidence/ex07-dns.png`). Both pass.
+- **2026-11-09:** Billing home (root) shows month-to-date cost $4.30, $0.00 charged, and 1 active budget, so Task 0's budget alert exists. Credits: $140.00 total, $135.70 remaining.
