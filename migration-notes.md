@@ -44,10 +44,10 @@ This repo is public, so no IP addresses, account IDs, passwords or resource IDs 
 | The app works at `aws.csetioko.me` | Pass | Home and privacy pages `200`, with the real profile and no fallback warning or placeholder. CSS, JS and fonts `200`. Admin `503` (off by design); unknown paths `404`. All 26 visible database items appear on the page. 20/20 loads `200`, averaging 0.33 s. The app's database connection uses TLS as `career_app`. Logs record real visitor IPs, matching the privacy page. Survived a reboot (Task 6). |
 
 **Not verified yet:**
-- The two visual checks the guide asks Chris to do himself: the record in the Cloudflare dashboard, and the padlock in a browser. The same facts were checked from the CLI and `openssl`.
 - What visitors see if RDS becomes unreachable. The fallback page exists, but the outage test wasn't run.
 - A real certificate renewal. Only the dry run has run; the first real renewal is due around January 2027.
 - Phones or browsers other than `curl`, and traffic beyond 20 requests in a row.
 - IPv6. The server has no IPv6 address and there's no AAAA record, so IPv6-only visitors can't reach it.
 - **The guide's premise that Railway keeps serving the real domain no longer holds.** `csetioko.me` returns Railway's `404 Application not found` (`x-railway-fallback: true`), so the main domain is down until the cutover in section 11.
 - **2026-11-09:** README updated for AWS (course guide section 12): architecture diagram, why EC2 + RDS, running and deploying, backups and restore, what was tested, cost table, next steps. The Mermaid diagram was checked by hand; rendering it locally was blocked.
+- **2026-11-09:** Chris checked the browser padlock (certificate valid) and the Cloudflare dashboard (screenshot in `docs/evidence/ex07-dns.png`). Both pass.
